@@ -1,6 +1,5 @@
   .container {
-    margin: auto;
-    max-width: 500px;
+    margin: 5% 5%;
     font-family: sans-serif;
     text-align: center;
   }
@@ -10,6 +9,8 @@
     text-align: center;
   }
   .nav-links {
+    margin: auto;
+    max-width: 500px;
     display: flex;
     list-style: none;
     padding-left: 0;
