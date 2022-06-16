@@ -1,11 +1,13 @@
-.container {
+  .container {
     margin: auto;
     max-width: 500px;
     font-family: sans-serif;
+    text-align: center;
   }
-  
+
   .heading {
-    color: teal;
+    color: rgb(192, 0, 0);
+    text-align: center;
   }
   .nav-links {
     display: flex;
@@ -17,4 +19,10 @@
   }
   .nav-link-text {
     color: black;
+  }
+  .site-title {
+      font-size: 3rem;
+      color: darkgoldenrod;
+      font-weight: 700;
+      text-align: center;
   }
