@@ -11,13 +11,11 @@ function DynamicTable({nodes}) {
 
     const TdData = () =>{
         return nodes.map((data) =>{
-            console.log(JSON.stringify(data));
             return(
                 <tr key={data.id}> 
                     {
                         keys.map((v)=>{
-                            console.log(data[v]);
-                            return <td>{data[v]}</td>
+                            return <td key={`${v} ${data[v]} ${data}`}>{data[v]}</td>
                         })
                     }
                 </tr>
