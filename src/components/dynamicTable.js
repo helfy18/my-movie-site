@@ -5,6 +5,7 @@ function DynamicTable({nodes}) {
 
     const ThData = () =>{
         return keys.map((data)=>{
+            data = data.replaceAll('_', ' ');
             return <th key={data}>{data}</th>
         })
     }

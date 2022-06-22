@@ -1,19 +1,16 @@
   .container {
-    margin: 5% 5%;
+    margin: 1% 5%;
     font-family: sans-serif;
     text-align: center;
   }
-
   .heading {
     color: rgb(192, 0, 0);
     text-align: center;
   }
   .nav-links {
-    margin: auto;
-    max-width: 500px;
     display: flex;
     list-style: none;
-    padding-left: 0;
+    justify-content: center;
   }
   .nav-link-item {
     padding-right: 2rem;
@@ -27,3 +24,23 @@
       font-weight: 700;
       text-align: center;
   }
+
+  th, td {
+    padding: 15px;
+  }
+
+  th {
+    background-color: orange;
+    color: white;
+  }
+
+  tr {
+    border-bottom: 1px solid;
+  }
+
+  table {
+    border: 1px solid;
+    border-collapse: collapse;
+  }
+
+  tr:nth-child(even) {background-color: #f2f2f2;}
