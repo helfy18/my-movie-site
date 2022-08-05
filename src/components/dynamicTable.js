@@ -25,7 +25,7 @@ function DynamicTable({nodes}) {
     }
 
     return (
-        <table className="table">
+        <table id="movieTable" className="table">
             <thead>
                 <tr>{ThData()}</tr>
             </thead>
