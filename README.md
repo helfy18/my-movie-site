@@ -4,7 +4,7 @@
   </a>
 </p>
 <h1 align="center">
-  How to Run The Project
+  How to Run The Project!
 </h1>
 
 ## 🚀 Quick start
