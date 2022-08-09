@@ -1,5 +1,5 @@
 import * as React from 'react'
-function DynamicTable({nodes}) {
+export default function DynamicTable({nodes}) {
     const keys = Object.keys(nodes[0]);
     keys.splice(keys.indexOf("id"), 1)
 
@@ -35,5 +35,3 @@ function DynamicTable({nodes}) {
         </table>
     )
 }
-
-export default DynamicTable;

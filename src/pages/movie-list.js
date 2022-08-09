@@ -3,15 +3,19 @@ import { graphql } from 'gatsby'
 import { useState } from 'react';
 import Layout from '../components/layout'
 import DynamicTable from '../components/dynamicTable';
+import Selectpicker from '../components/selectPicker';
+import GenerateFilter from '../components/generateFilter';
 
 const ExcelPage = ({ data }) => {
+    console.log(data);
     const nodes = data.movies.nodes;
     const [table, setTable] = useState(nodes);
-
+    const filter = GenerateFilter({data});
     return (
         <Layout pageTitle = "Movies :)">
+            <Selectpicker options={filter}/>
             <button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>
-            <DynamicTable nodes={table}></DynamicTable>
+            <DynamicTable nodes={table}/>
         </Layout>
     )
 }
@@ -21,7 +25,7 @@ export const query = graphql`
         genre: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Genre)
         }
-        genre_two: allMovieMovieMoviesXlsxMasterlist(filter: {Genre_2: {ne: " "}}) {
+        genre_two: allMovieMovieMoviesXlsxMasterlist(filter: {Genre_2: {ne: ""}}) {
           distinct(field: Genre_2)
         }
         years: allMovieMovieMoviesXlsxMasterlist {
@@ -54,7 +58,7 @@ export const query = graphql`
           }
         }
         second: allMovieMovieMoviesXlsxMasterlist(
-          filter: {Genre: {eq: "Animated"}, Year: {eq: 1995}}
+          filter: {Genre: {eq: "Animated"}, Year: {gte: 1995, lte: 2000}}
         ) {
           nodes {
             Movie
@@ -70,5 +74,4 @@ export const query = graphql`
           }
         }    
     }`
-
 export default ExcelPage
