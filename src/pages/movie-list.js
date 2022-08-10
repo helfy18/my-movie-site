@@ -7,7 +7,6 @@ import Selectpicker from '../components/selectPicker';
 import GenerateFilter from '../components/generateFilter';
 
 const ExcelPage = ({ data }) => {
-    console.log(data);
     const nodes = data.movies.nodes;
     const [table, setTable] = useState(nodes);
     const filter = GenerateFilter({data});
@@ -19,7 +18,7 @@ const ExcelPage = ({ data }) => {
         </Layout>
     )
 }
-//need to merge genre with genre2
+
 export const query = graphql`
     query  {
         genre: allMovieMovieMoviesXlsxMasterlist {
