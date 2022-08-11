@@ -7,14 +7,14 @@ import Selectpicker from '../components/selectPicker';
 import GenerateFilter from '../components/generateFilter';
 
 const ExcelPage = ({ data }) => {
-    //const nodes = data.movies.nodes;
-    //const [table, setTable] = useState(nodes);
+    const nodes = data.movies.nodes;
+    const [table, setTable] = useState(nodes);
     const filter = GenerateFilter({data});
     return (
         <Layout pageTitle = "Movies :)">
             <Selectpicker options={filter}/>
-            {/*<button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>*/}
-            {/*<DynamicTable nodes={nodes}/>*/}
+            <button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>
+            <DynamicTable nodes={table}/>
         </Layout>
     )
 }
