@@ -12,8 +12,8 @@ const ExcelPage = ({ data }) => {
     const filter = GenerateFilter({data});
     return (
         <Layout pageTitle = "Movies :)">
-            {/*<Selectpicker options={filter}/>*/}
-            <button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>
+            <Selectpicker options={filter}/>
+            {/*<button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>*/}
             <DynamicTable nodes={table}/>
         </Layout>
     )
