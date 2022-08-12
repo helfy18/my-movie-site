@@ -4,7 +4,7 @@
     text-align: center;
   }
   .heading {
-    color: rgb(192, 0, 0);
+    color: rgba(11, 164, 184, 0.842);
     text-align: center;
   }
   .nav-links {
@@ -20,7 +20,7 @@
   }
   .site-title {
       font-size: 3rem;
-      color: darkgoldenrod;
+      color: rgba(11, 164, 184, 0.842);
       font-weight: 700;
       text-align: center;
   }
@@ -30,7 +30,7 @@
   }
 
   th {
-    background-color: orange;
+    background-color: rgba(11, 164, 184, 0.842);
     color: white;
   }
 
