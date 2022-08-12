@@ -41,6 +41,7 @@
   table {
     border: 1px solid;
     border-collapse: collapse;
+    margin-top: 1rem;
   }
 
   tr:nth-child(even) {background-color: #f2f2f2;}

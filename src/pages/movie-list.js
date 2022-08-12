@@ -3,19 +3,28 @@ import { graphql } from 'gatsby'
 import { useState } from 'react';
 import Layout from '../components/layout'
 import DynamicTable from '../components/dynamicTable';
-import Selectpicker from '../components/selectPicker';
 import GenerateFilter from '../components/generateFilter';
+import Select from 'react-select';
 
 const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
     const [table, setTable] = useState(nodes);
     const filter = GenerateFilter({data});
     return (
+      <div>
         <Layout pageTitle = "Movies :)">
-            <Selectpicker options={filter}/>
+            <Select
+              options={filter}
+              isMulti
+              closeMenuOnSelect={false}
+              isSearchable
+              placeholder={"Filter Movies"}
+            />
+            <br />
             <button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>
             <DynamicTable nodes={table}/>
         </Layout>
+      </div>
     )
 }
 
