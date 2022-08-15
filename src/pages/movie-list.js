@@ -9,6 +9,7 @@ import Select from 'react-select';
 const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
     const [table, setTable] = useState(nodes);
+    const [selected, setSelected] = useState(null);
     const filter = GenerateFilter({data});
 
     return (
@@ -20,10 +21,10 @@ const ExcelPage = ({ data }) => {
               closeMenuOnSelect={false}
               isSearchable
               placeholder={"Filter Movies"}
-              onChange={(e) => console.log(e)}
+              onChange={(e) => setSelected(e)}
             />
             <br />
-            <button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>
+            <button onClick={() => {setTable(data.second.nodes); console.log(selected)}}>seriously, please don't click me</button>
             <DynamicTable nodes={table}/>
         </Layout>
       </div>

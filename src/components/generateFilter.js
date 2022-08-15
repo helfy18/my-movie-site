@@ -17,7 +17,7 @@ export default function GenerateFilter({data}) {
     for (const type in everything[headerIndex]) {
       let optionsArray = [];
       for (let opt of everything[headerIndex][type]) {
-        optionsArray.push({ value: opt, label: opt});
+        optionsArray.push({ value: opt, label: opt, category: type});
       }
       everything[headerIndex] = {
         label: type,
