@@ -10,6 +10,7 @@ const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
     const [table, setTable] = useState(nodes);
     const filter = GenerateFilter({data});
+
     return (
       <div>
         <Layout pageTitle = "Movies :)">
@@ -19,6 +20,7 @@ const ExcelPage = ({ data }) => {
               closeMenuOnSelect={false}
               isSearchable
               placeholder={"Filter Movies"}
+              onChange={(e) => console.log(e)}
             />
             <br />
             <button onClick={() => setTable(data.second.nodes)}>seriously, please don't click me</button>
