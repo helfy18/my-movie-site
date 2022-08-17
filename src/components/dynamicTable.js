@@ -16,6 +16,7 @@ export default function DynamicTable({nodes}) {
                 <tr key={data.id}> 
                     {
                         keys.map((v)=>{
+                            if (typeof data[v] === 'string') {data[v] = data[v].replaceAll('"', '');}
                             return <td key={`${v} ${data[v]} ${data}`}>{data[v]}</td>
                         })
                     }
