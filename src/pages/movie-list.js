@@ -5,6 +5,7 @@ import Layout from '../components/layout'
 import DynamicTable from '../components/dynamicTable';
 import GenerateFilter from '../components/generateFilter';
 import Select from 'react-select';
+import dataQuery from '../components/dataQuery';
 
 const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
@@ -23,8 +24,8 @@ const ExcelPage = ({ data }) => {
               placeholder={"Filter Movies"}
               onChange={(e) => setSelected(e)}
             />
-            <br />
-            <button onClick={() => {setTable(data.second.nodes); console.log(selected)}}>seriously, please don't click me</button>
+            <br/>
+            <button onClick={() => setTable(dataQuery(selected, {data}))}>Set Filter</button>
             <DynamicTable nodes={table}/>
         </Layout>
       </div>
@@ -36,22 +37,22 @@ export const query = graphql`
         genre: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Genre)
         }
-        genre_two: allMovieMovieMoviesXlsxMasterlist(filter: {Genre_2: {ne: ""}}) {
+        genre_two: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Genre_2)
         }
         years: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Year)
         }
-        universes: allMovieMovieMoviesXlsxMasterlist(filter: {Universe: {ne: ""}}) {
+        universes: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Universe)
         }
-        sub_universes: allMovieMovieMoviesXlsxMasterlist(filter: {Sub_Universe: {ne: ""}}) {
+        sub_universes: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Sub_Universe)
         }
-        exclusive: allMovieMovieMoviesXlsxMasterlist(filter: {Exclusive: {ne: ""}}) {
+        exclusive: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Exclusive)
         }
-        holiday: allMovieMovieMoviesXlsxMasterlist(filter: {Holiday: {ne: ""}}) {
+        holiday: allMovieMovieMoviesXlsxMasterlist {
           distinct(field: Holiday)
         }
         movies: allMovieMovieMoviesXlsxMasterlist {
