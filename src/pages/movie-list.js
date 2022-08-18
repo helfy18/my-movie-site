@@ -12,8 +12,9 @@ import { Row, Col } from 'react-grid-system';
 
 const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
+    console.log(nodes);
     nodes.sort((a, b) => {
-      return b.score - a.score;
+      return b.Score - a.Score;
     });
     const [table, setTable] = useState(nodes);
     const [selected, setSelected] = useState(null);
