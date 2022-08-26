@@ -28,6 +28,7 @@
     "react-dropdown": "^1.10.0",
     "react-excel-renderer": "^1.1.0",
     "react-grid-system": "^8.1.6",
+    "react-search-field": "^2.0.1",
     "react-select": "^5.4.0"
   }
 }

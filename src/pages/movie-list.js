@@ -8,11 +8,20 @@ import Select from 'react-select';
 import dataQuery from '../components/dataQuery';
 import {reactSelectContainer} from '../components/layout.module.css'
 import { Row, Col } from 'react-grid-system';
+import SearchField from 'react-search-field';
 
+function searchFilter(text, data) {
+  var newData = [];
+  for (let index of data) {
+    if (index.Movie.toLowerCase().includes(text.toLowerCase())) {
+      newData.push(index);
+    }
+  }
+  return newData;
+}
 
 const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
-    console.log(nodes);
     nodes.sort((a, b) => {
       return b.Score - a.Score;
     });
@@ -24,7 +33,13 @@ const ExcelPage = ({ data }) => {
       <div>
         <Layout pageTitle = "Movies :)">
           <Row>
-            <Col sm={9}>
+            <Col sm={2}>
+              <SearchField
+                placeholder='Search for a Movie...'
+                onChange={(value) => searchFilter(value, dataQuery(selected, { data })).length !== 0 ? setTable(searchFilter(value, dataQuery(selected, { data }))) : setTable(nodes)}
+              />
+            </Col>
+            <Col sm={8}>
               <Select
                 className={reactSelectContainer}
                 classNamePrefix="react-select"
@@ -36,7 +51,7 @@ const ExcelPage = ({ data }) => {
                 onChange={(e) => setSelected(e)}
               />
             </Col>
-            <Col sm={3}>
+            <Col sm={2}>
               <button onClick={() => setTable(dataQuery(selected, { data }))}>Set Filter</button>
             </Col>
           </Row>
