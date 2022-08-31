@@ -22,9 +22,16 @@ function searchFilter(text, data) {
 
 const ExcelPage = ({ data }) => {
     const nodes = data.movies.nodes;
+    // Sort the data in descending score
     nodes.sort((a, b) => {
       return b.Score - a.Score;
     });
+    // Add an overall rank based on score
+    var i = 1;
+    for (let index in nodes) {
+      nodes[index] = Object.assign({"Overall Rank": i++}, nodes[index] );
+    }
+
     const [table, setTable] = useState(nodes);
     const [selected, setSelected] = useState(null);
     const filter = GenerateFilter({data});
