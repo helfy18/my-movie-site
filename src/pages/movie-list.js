@@ -13,7 +13,10 @@ import SearchField from 'react-search-field';
 function searchFilter(text, data) {
   var newData = [];
   for (let index of data) {
-    if (index.Movie.toLowerCase().includes(text.toLowerCase())) {
+    if (index.Movie.toLowerCase().includes(text.toLowerCase()) ||
+      index.Universe.toLowerCase().includes(text.toLowerCase()) ||
+      index.Sub_Universe.toLowerCase().includes(text.toLowerCase())
+    ) {
       newData.push(index);
     }
   }
