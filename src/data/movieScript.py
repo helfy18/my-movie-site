@@ -21,8 +21,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
         try:
             # skip entries already filled, comment out if full update required
-            if ws[index + 1][plot].value:
-                continue
+            # if ws[index + 1][plot].value:
+            #     continue
             # title and year for search
             t = ws[index + 1][title].value
             y = ws[index + 1][year].value
@@ -43,6 +43,10 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 t = "Fantastic Four"
             if "Kangaroo Jack:" in t and y == 2004:
                 t = "Kangaroo Jack 2"
+            if t == "Cyrano":
+                y = '2021'
+            if "&" in t:
+                t = t.replace("&", "\&")
 
             # submit api request
             m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
