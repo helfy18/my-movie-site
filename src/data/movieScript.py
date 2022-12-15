@@ -21,8 +21,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
         try:
             # skip entries already filled, comment out if full update required
-            # if ws[index + 1][plot].value:
-            #     continue
+            if ws[index + 1][plot].value:
+                continue
             # title and year for search
             t = ws[index + 1][title].value
             y = ws[index + 1][year].value

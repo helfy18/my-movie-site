@@ -15,8 +15,11 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
+    "@mui/material": "^5.11.0",
     "gatsby": "^4.15.2",
     "gatsby-plugin-image": "^2.15.1",
     "gatsby-plugin-mdx": "^3.16.0",
@@ -28,6 +31,7 @@
     "react-dropdown": "^1.10.0",
     "react-excel-renderer": "^1.1.0",
     "react-grid-system": "^8.1.6",
+    "react-router-dom": "^6.4.5",
     "react-search-field": "^2.0.1",
     "react-select": "^5.4.0"
   }
