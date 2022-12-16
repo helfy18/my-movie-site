@@ -63,7 +63,6 @@ const gradientArray = new Gradient()
     .getColors();
 
 const MoviePage = ({location}) => {
-    console.log(location.state.from)
     return (
       <div>
         <Layout pageTitle = "Movies :)">
