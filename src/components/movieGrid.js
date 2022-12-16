@@ -1,0 +1,45 @@
+import * as React from 'react'
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import { Link } from 'gatsby'
+import Gradient from "javascript-color-gradient";
+
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: '#0A0A0A',
+    fontFamily: "Arial",
+    height: "250px",
+    width: "110px",
+    fontSize: "13px",
+  }));
+
+const gradientArray = new Gradient()
+  .setColorGradient("#FF0000", "#4CBB17")
+  .setMidpoint(101)
+  .getColors();
+
+export default function MovieGrid({nodes}) {
+    return (
+    <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2.5}>
+            {nodes.map((data) => {
+                return ( 
+                    <Grid item xs={"auto"} key={data.id}>
+                        <Link to='/movie-page' state={{from: data}} style={{textDecoration: "none"}}>
+                            <Item>
+                                <img src={data.Poster} height={170} alt=""/>
+                                <div style={{color: gradientArray[data.Score], fontWeight: "bolder"}}>{data.Score}/100</div>
+                                <div>{data.Movie}</div>
+                            </Item>
+                        </Link>
+                    </Grid>
+                )
+            })}
+        </Grid>
+    </Box>
+    )
+}
