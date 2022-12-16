@@ -23,6 +23,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             # skip entries already filled, comment out if full update required
             if ws[index + 1][plot].value:
                 continue
+
             # title and year for search
             t = ws[index + 1][title].value
             y = ws[index + 1][year].value
@@ -47,13 +48,37 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 y = '2021'
             if "&" in t:
                 t = t.replace("&", "\&")
-
+            if t == "Tiptoes":
+                y = '2002'
             # submit api request
             m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
+
+            if t == "Tiptoes":
+                y = '2003'
+
+            if not ws[index + 1][actors].value:
+                m2 = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={t}&year={y}').json()
+                tmdbcode = m2["results"][0]["id"]
+                m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
+                actorString = ""
+                count = 1
+                for actor in m3["cast"]:
+                    if count < 8:
+                        actorString = f'{actorString}{actor["name"]}, '
+                        count = count + 1
+                    else:
+                        actorString = f'{actorString}{actor["name"]}'
+                        break
+                if actorString and actorString[-2] == ",":
+                    actorString = actorString[:-2]
+                print(t, actorString)
+                if actorString:
+                    ws[index + 1][actors].value = actorString
+                else:
+                    ws[index + 1][actors].value = m["Actors"]
             # unpack values and save to spreadsheet
             ws[index + 1][plot].value = m["Plot"]
             ws[index + 1][poster].value = m["Poster"]
-            ws[index + 1][actors].value = m["Actors"]
             ws[index + 1][director].value = m["Director"]
             ws[index + 1][ratings].value = str(m["Ratings"])
             ws[index + 1][boxoffice].value = m["BoxOffice"]
@@ -61,5 +86,5 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][runtime].value = m["Runtime"]
             wb.save('MovieMovieMovies.xlsx')
         except:
-            print(t, y, json.dumps(m, indent=4))
+            print(t, y)
             sys.exit()

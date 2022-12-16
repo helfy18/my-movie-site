@@ -3,7 +3,6 @@ import { Link, useStaticQuery, graphql } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
 import  { 
     container,
-    heading,
     navLinks,
     navLinkItem,
     navLinkText,
@@ -23,41 +22,41 @@ const Layout = ({ pageTitle, children }) => {
   return (
     <div className={container}>
       <title>{pageTitle} | {data.site.siteMetadata.title} </title>
-      <header className={siteTitle}> 
-        <StaticImage src="../images/nachos.png" height={50} alt=""/>
-        <span/> {data.site.siteMetadata.title} <span/>
-        <StaticImage src="../images/nachos.png" height={50} alt=""/>
-      </header>
+      <Link to="/" style={{textDecoration: "none"}}>
+        <header className={siteTitle}> 
+          <StaticImage src="../images/nachos.png" height={40} alt=""/>
+          <span/>{data.site.siteMetadata.title} <span/>
+          <StaticImage src="../images/nachos.png" height={40} alt=""/>
+        </header>
+      </Link>
       <nav>
         <ul className={navLinks}>
           <li className={navLinkItem}>
-            <Link to="/" className={navLinkText}>
+            <Link to="/" className={navLinkText} style={{textDecoration: "none", color: "#008080"}}>
               Home
             </Link>
           </li>
           <li className={navLinkItem}>
-            <Link to="/about" className={navLinkText}>
+            <Link to="/about" className={navLinkText} style={{textDecoration: "none", color: "#008080"}}>
               About
             </Link>
           </li>
           <li className={navLinkItem} hidden>
-            <Link to="/blog" className={navLinkText}>
+            <Link to="/blog" className={navLinkText} style={{textDecoration: "none", color: "#008080"}}>
                 Blog
             </Link>
           </li>
           <li className={navLinkItem}>
-            <Link to="/movie-list" className={navLinkText}>
+            <Link to="/movie-grid" className={navLinkText} style={{textDecoration: "none", color: "#008080"}}>
                 Movie Ratings
             </Link>
           </li>
         </ul>
       </nav>
       <main>
-        <h1 className={heading}>
-            {pageTitle}
-        </h1>
         {children}
       </main>
+      <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" height={50} style={{paddingTop: "1rem"}} alt="TMDB API"></img>
     </div>
   )
 }
