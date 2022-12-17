@@ -53,13 +53,13 @@ const GridPage = ({ data }) => {
       <div>
         <Layout pageTitle = "Movies :)">
           <Row className={reactGrid}>
-            <Col sm={3}>
+            <Col lg={3} md={4} style={{textAlign:"center"}}>
               <SearchField
                 placeholder='Search for a Movie...'
                 onChange={(value) => searchFilter(value, dataQuery(selected, { data })).length !== 0 ? setTable(searchFilter(value, dataQuery(selected, { data }))) : setTable(nodes)}
               />
             </Col>
-            <Col sm={6}>
+            <Col lg={6} md={5}>
               <Select
                 className={reactSelectContainer}
                 classNamePrefix="react-select"
@@ -126,6 +126,7 @@ export const query = graphql`
           BoxOffice
           Actors
           Director
+          Budget
           id
         }
       }

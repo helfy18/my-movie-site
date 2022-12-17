@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { Link } from 'gatsby'
@@ -24,7 +23,6 @@ const gradientArray = new Gradient()
 
 export default function MovieGrid({nodes}) {
     return (
-    <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2.5}>
             {nodes.map((data) => {
                 return ( 
@@ -40,6 +38,5 @@ export default function MovieGrid({nodes}) {
                 )
             })}
         </Grid>
-    </Box>
     )
 }
