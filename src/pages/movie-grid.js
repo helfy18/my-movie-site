@@ -126,6 +126,7 @@ export const query = graphql`
           BoxOffice
           Actors
           Director
+          Budget
           id
         }
       }

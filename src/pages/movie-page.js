@@ -69,7 +69,7 @@ const MoviePage = ({location}) => {
               <Layout pageTitle = "Movies :)">
                   <Box sx={{ flexGrow: 1 }}>
                       <Grid container spacing={2.5}>
-                          <Grid item xs>
+                          <Grid item xs  textAlign="center">
                               <img src={location.state.from.Poster} alt="Oops Something Went Wrong"></img>
                           </Grid>
                           <Grid item xs>
@@ -85,7 +85,8 @@ const MoviePage = ({location}) => {
                                       <tr><td>Year</td><td>{location.state.from.Year}</td></tr>
                                       <tr><td>MPA Rating</td><td>{location.state.from.Rated}</td></tr>
                                       <tr><td>Runtime</td><td>{location.state.from.Runtime}</td></tr>
-                                      <tr><td>Box Office</td><td>{location.state.from.BoxOffice}</td></tr>
+                                      <tr><td>Budget</td><td>${location.state.from.Budget}</td></tr>
+                                      <tr><td>Box Office</td><td>${location.state.from.BoxOffice}</td></tr>
                                       <tr><td>Actors</td><td>{location.state.from.Actors}</td></tr>
                                       <tr><td>Director</td><td>{location.state.from.Director}</td></tr>
                                   </tbody>

@@ -1,5 +1,5 @@
 from openpyxl import *
-import requests, json, sys, config
+import requests, sys, config
 
 # ws contains the main sheet (MasterList)
 wb = load_workbook('MovieMovieMovies.xlsx')
@@ -16,6 +16,7 @@ ratings = 14
 boxoffice = 15
 rated = 16
 runtime = 17
+budget = 18
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
@@ -55,10 +56,10 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
             if t == "Tiptoes":
                 y = '2003'
-
-            if not ws[index + 1][actors].value:
-                m2 = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={t}&year={y}').json()
-                tmdbcode = m2["results"][0]["id"]
+            # if not (ws[index + 1][actors].value and ws[index + 1][boxoffice].value and ws[index+1][budget].value):
+            m2 = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={t}&year={y}').json()
+            tmdbcode = m2["results"][0]["id"]
+            if not (ws[index + 1][actors].value):
                 m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
                 actorString = ""
                 count = 1
@@ -76,12 +77,20 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                     ws[index + 1][actors].value = actorString
                 else:
                     ws[index + 1][actors].value = m["Actors"]
+            if not (ws[index + 1][boxoffice].value and ws[index + 1][budget].value):
+                m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}?api_key={config.tmdbkey}').json()
+                try:
+                    boxofficeTotal = m3['revenue']
+                except KeyError:
+                    boxofficeTotal = 'N/A'
+                ws[index + 1][plot].value = m3["overview"]
+                ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
+                ws[index + 1][budget].value = f"{m3['budget']:,}"
+                ws[index + 1][plot].value = m3['overview']
             # unpack values and save to spreadsheet
-            ws[index + 1][plot].value = m["Plot"]
             ws[index + 1][poster].value = m["Poster"]
             ws[index + 1][director].value = m["Director"]
             ws[index + 1][ratings].value = str(m["Ratings"])
-            ws[index + 1][boxoffice].value = m["BoxOffice"]
             ws[index + 1][rated].value = m["Rated"]
             ws[index + 1][runtime].value = m["Runtime"]
             wb.save('MovieMovieMovies.xlsx')
