@@ -29,7 +29,7 @@ export default function MovieGrid({nodes}) {
                     <Grid item xs={"auto"} key={data.id}>
                         <Link to='/movie-page' state={{from: data}} style={{textDecoration: "none"}}>
                             <Item>
-                                <img src={data.Poster} height={170} alt=""/>
+                                <img src={data.Poster} height={163} width={110} alt=""/>
                                 <div style={{color: gradientArray[data.Score], fontWeight: "bolder"}}>{data.Score}/100</div>
                                 <div>{data.Movie}</div>
                             </Item>

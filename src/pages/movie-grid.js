@@ -55,7 +55,7 @@ const GridPage = ({ data }) => {
           <Row className={reactGrid}>
             <Col lg={3} md={4} style={{textAlign:"center"}}>
               <SearchField
-                placeholder='Search for a Movie...'
+                placeholder='Search for Title, Actor, Director...'
                 onChange={(value) => searchFilter(value, dataQuery(selected, { data })).length !== 0 ? setTable(searchFilter(value, dataQuery(selected, { data }))) : setTable(nodes)}
               />
             </Col>

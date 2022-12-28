@@ -70,7 +70,7 @@ const MoviePage = ({location}) => {
                         <Grid item xs  textAlign="center">
                             <img src={location.state.from.Poster} alt="Oops Something Went Wrong"></img>
                         </Grid>
-                        <Grid item xs>
+                        <Grid item sm={12} margin={"1rem"} md={5} marginTop={0}>
                             <table id="infoTable" className='table'>
                                 <tbody>
                                     <tr><td>Title</td><td>{location.state.from.Movie}</td></tr>
@@ -90,7 +90,7 @@ const MoviePage = ({location}) => {
                                 </tbody>
                             </table>
                         </Grid>
-                        <Grid item xs>
+                        <Grid item sm={12} margin={"1rem"}  marginTop={0} lg>
                             <Item>Plot:<br/>{location.state.from.Plot}</Item>
                             <br/>
                             {getReview(location.state.from.Review)}
