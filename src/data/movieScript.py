@@ -47,17 +47,21 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 t = "Kangaroo Jack 2"
             if t == "Cyrano":
                 y = '2021'
+            if t == 'Blades of Glory':
+                y = '2006'
             if "&" in t:
                 t = t.replace("&", "\&")
             if t == "Tiptoes":
                 y = '2002'
             # submit api request
             m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
-
+            if t == 'Blades of Glory':
+                y = '2007'
             if t == "Tiptoes":
                 y = '2003'
             # if not (ws[index + 1][actors].value and ws[index + 1][boxoffice].value and ws[index+1][budget].value):
             m2 = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={t}&year={y}').json()
+            path = m2['results'][0]['poster_path']
             tmdbcode = m2["results"][0]["id"]
             if m2["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
                 tmdbcode = m2['results'][1]['id']
@@ -88,7 +92,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][budget].value = f"{m3['budget']:,}"
             ws[index + 1][plot].value = m3['overview']
             # unpack values and save to spreadsheet
-            ws[index + 1][poster].value = m["Poster"]
+            # ws[index + 1][poster].value = m["Poster"]
+            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/original{path}'
             ws[index + 1][director].value = m["Director"]
             ws[index + 1][ratings].value = str(m["Ratings"])
             ws[index + 1][rated].value = m["Rated"]

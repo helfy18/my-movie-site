@@ -68,7 +68,7 @@ const MoviePage = ({location}) => {
               <Layout pageTitle = "Movies :)">
                     <Grid container spacing={2.5}>
                         <Grid item xs  textAlign="center">
-                            <img src={location.state.from.Poster} alt="Oops Something Went Wrong"></img>
+                            <img src={location.state.from.Poster} width="275px" alt="Not Found"></img>
                         </Grid>
                         <Grid item sm={12} margin={"1rem"} md={5} marginTop={0}>
                             <table id="infoTable" className='table'>
