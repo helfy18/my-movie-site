@@ -6,6 +6,7 @@ export default function dataQuery(selected, {data}) {
   var exclusive = data.exclusive.distinct;
   var years = data.years.distinct;
   var movies = data.movies.nodes;
+  var directors = data.directors.distinct
 
   var genre_flag = false;
   var universes_flag = false;
@@ -13,6 +14,7 @@ export default function dataQuery(selected, {data}) {
   var holiday_flag = false;
   var exclusive_flag = false;
   var years_flag = false;
+  var directors_flag = false;
   
   if (selected) {
     for (let object of selected) {
@@ -59,6 +61,13 @@ export default function dataQuery(selected, {data}) {
           }
           years.push(object.value);
           break;
+        case "DIRECTORS":
+          if (!directors_flag) {
+            directors = [];
+            directors_flag = true;
+          }
+          directors.push(object.value);
+          break;
         default:
           break;
       }
@@ -70,6 +79,7 @@ export default function dataQuery(selected, {data}) {
       && universes.includes(e.Universe)
       && sub_universes.includes(e.Sub_Universe)
       && years.includes(e.Year.toString())
+      && directors.includes(e.Director)
     });
   }
   return movies;

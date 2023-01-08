@@ -104,7 +104,7 @@ const GridPage = ({ data }) => {
                       isMulti
                       closeMenuOnSelect={false}
                       isSearchable
-                      placeholder={`Ex: ${opt["options"][0]["label"]}, ${opt["options"][1]["label"]}`}
+                      placeholder={`Ex: ${opt["options"][0]["label"]}`}
                       onChange={(e) => {setSelected((prevState) => selectedOptions(prevState, e, opt["label"]))}}
                       >
                     </Select>
@@ -154,6 +154,15 @@ export const query = graphql`
           fieldValue
           totalCount
         }
+      }
+      director: allMovieMovieMoviesXlsxMasterlist {
+        group(field: Director) {
+          fieldValue
+          totalCount
+        }
+      }
+      directors: allMovieMovieMoviesXlsxMasterlist {
+        distinct(field: Director)
       }
       movies: allMovieMovieMoviesXlsxMasterlist {
         nodes {
