@@ -93,7 +93,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][plot].value = m3['overview']
             # unpack values and save to spreadsheet
             # ws[index + 1][poster].value = m["Poster"]
-            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/original{path}'
+            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             ws[index + 1][director].value = m["Director"]
             ws[index + 1][ratings].value = str(m["Ratings"])
             ws[index + 1][rated].value = m["Rated"]

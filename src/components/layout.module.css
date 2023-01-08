@@ -48,8 +48,8 @@
   }
 
   button {
-    background-color: rgba(11, 164, 184, 0.842);
-    border: none;
+    background-color: #55CBCD ;
+    border: 2px solid darkgrey;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -57,21 +57,27 @@
     height: 100%;
     width: 100%;
     cursor: pointer;
+    box-shadow: 0 0 1px 0 #000;
   }
 
   button:hover {
-    background-color: navy;
+    background-color: #5bd8da;
   }
 
   .react-select-container {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .react-grid {
     margin-left: 0rem !important;
     margin-right: 0rem !important;
     padding-bottom: 2rem;
+  }
+
+  .search-bar {
+    width: 99%;
   }
 
   @media (max-width: 480px) {
