@@ -27,8 +27,6 @@ export default function GenerateFilter({data}) {
   secondGenre.sort((a,b) => {return (a.fieldValue > b.fieldValue) ? 1 : ((a.fieldValue < b.fieldValue) ? -1: 0)})
   var extraGenres = [{label: "Popular Genres", options: firstGenre}, {label: "More Genres", options: secondGenre}]
 
-  console.log(extraGenres)
-
   var decades = []
   //for
 
@@ -51,7 +49,6 @@ export default function GenerateFilter({data}) {
             subOptionsArray.push({value: entry.fieldValue, label: entry.fieldValue, category: arr.label})
           }
           optionsArray.push({label: arr.label, options: subOptionsArray})
-          console.log(optionsArray)
         }
       } else {
         for (let opt of everything[headerIndex][type]) {
