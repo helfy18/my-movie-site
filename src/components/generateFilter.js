@@ -46,7 +46,7 @@ export default function GenerateFilter({data}) {
         for (let arr of everything[headerIndex][type]) {
           let subOptionsArray = []
           for (let entry of arr.options) {
-            subOptionsArray.push({value: entry.fieldValue, label: entry.fieldValue, category: arr.label})
+            subOptionsArray.push({value: entry.fieldValue, label: entry.fieldValue, category: "Genres"})
           }
           optionsArray.push({label: arr.label, options: subOptionsArray})
         }
