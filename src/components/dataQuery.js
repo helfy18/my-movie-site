@@ -19,21 +19,21 @@ export default function dataQuery(selected, {data}) {
   if (selected) {
     for (let object of selected) {
       switch (object.category.toUpperCase()) {
-        case "GENRES":
+        case "GENRE":
           if (!genre_flag) {
             genre = [];
             genre_flag = true;
           }
           genre.push(object.value);
           break;
-        case "UNIVERSES":
+        case "UNIVERSE":
           if (!universes_flag) {
             universes = [];
             universes_flag = true;
           }
           universes.push(object.value);
           break;
-        case "SUB UNIVERSES":
+        case "SUB UNIVERSE":
           if (!sub_universes_flag) {
             sub_universes = [];
             sub_universes_flag = true;
@@ -54,14 +54,14 @@ export default function dataQuery(selected, {data}) {
           }
           exclusive.push(object.value);
           break;
-        case "YEARS":
+        case "YEAR":
           if (!years_flag) {
             years = [];
             years_flag = true;
           }
           years.push(object.value);
           break;
-        case "DIRECTORS":
+        case "DIRECTOR":
           if (!directors_flag) {
             directors = [];
             directors_flag = true;

@@ -18,6 +18,16 @@ function genreManagement(temp_genre, genre2) {
   return [{label: "Popular Genres", options: firstGenre}, {label: "More Genres", options: secondGenre}]
 }
 
+function generateDecades(years) {
+  var minDecade = parseInt(Math.min.apply(Math, years) / 10)
+  var maxDecade = parseInt(Math.max.apply(Math, years) / 10)
+  var decades = []
+  for (minDecade; minDecade <= maxDecade; minDecade++) {
+    decades.push(`${minDecade}0 - ${minDecade}9`)
+  }
+  return decades
+}
+
 export default function GenerateFilter({data}) {
   var temp_genre = data.genrealt.group
   var genre2 = data.genre2alt.group
@@ -35,22 +45,19 @@ export default function GenerateFilter({data}) {
   director = director.map((dir) => dir.fieldValue)
 
   // Data management for the decades filter
-  var minYear = years[0]
-  var maxYear = years[years.length - 1]
-  var decades = []
-  //for
-  // console.log(minYear, maxYear, sub_universes)
-
   var extraGenres = genreManagement(temp_genre, genre2)
 
+  var decades = generateDecades(years)
+
   var everything = [
-    {"Genres": extraGenres},
-    {"Universes": universes},
-    {"Sub Universes": sub_universes},
+    {"Genre": extraGenres},
+    {"Universe": universes},
+    {"Sub Universe": sub_universes},
     {"Exclusive": exclusive},
     {"Holiday": holiday},
-    {"Years": years.sort().reverse() },
-    {"Directors": director}
+    {"Year": years.sort().reverse() },
+    {"Director": director},
+    {"Decade": decades},
   ]
 
   for (var headerIndex in everything) {
