@@ -95,7 +95,7 @@ const GridPage = ({ data }) => {
               </Grid>
               {filter.map((opt) => {
                 return (
-                  <Grid xs={6} item={true} key={`${opt["label"]}-12`}>
+                  <Grid xs={12} md={6} item={true} key={`${opt["label"]}-12`}>
                     <div key={`${opt["label"]}-select-picker`} style={{textAlign: "center"}}>{opt["label"]}</div>
                     <Select
                       className={reactSelectContainer}
@@ -104,7 +104,7 @@ const GridPage = ({ data }) => {
                       isMulti
                       closeMenuOnSelect={false}
                       isSearchable
-                      placeholder={`Ex: ${opt["options"][0]["label"]}`}
+                      placeholder={opt["label"] === "Genre" ? "Ex: Animated, Horror" : `Ex: ${opt["options"][0]["label"]}`}
                       onChange={(e) => {setSelected((prevState) => selectedOptions(prevState, e, opt["label"]))}}
                       >
                     </Select>

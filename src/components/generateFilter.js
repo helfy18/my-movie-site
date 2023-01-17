@@ -63,7 +63,7 @@ export default function GenerateFilter({data}) {
   for (var headerIndex in everything) {
     for (const type in everything[headerIndex]) {
       let optionsArray = [];
-      if (type === "Genres") {
+      if (type === "Genre") {
         for (let arr of everything[headerIndex][type]) {
           let subOptionsArray = []
           for (let entry of arr.options) {

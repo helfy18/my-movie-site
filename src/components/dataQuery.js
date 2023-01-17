@@ -7,6 +7,7 @@ export default function dataQuery(selected, {data}) {
   var years = data.years.distinct;
   var movies = data.movies.nodes;
   var directors = data.directors.distinct
+  var decades = data.years.distinct;
 
   var genre_flag = false;
   var universes_flag = false;
@@ -15,6 +16,7 @@ export default function dataQuery(selected, {data}) {
   var exclusive_flag = false;
   var years_flag = false;
   var directors_flag = false;
+  var decades_flag = false;
   
   if (selected) {
     for (let object of selected) {
@@ -68,6 +70,18 @@ export default function dataQuery(selected, {data}) {
           }
           directors.push(object.value);
           break;
+        case "DECADE":
+          if (!decades_flag) {
+            decades = [];
+            decades_flag = true;
+          }
+          let dec = object.value.split("-")
+          let low = parseInt(dec[0])
+          let high = parseInt(dec[1])
+          for (low; low <= high; low++) {
+            decades.push(low.toString())
+          }
+          break;
         default:
           break;
       }
@@ -80,6 +94,7 @@ export default function dataQuery(selected, {data}) {
       && sub_universes.includes(e.Sub_Universe)
       && years.includes(e.Year.toString())
       && directors.includes(e.Director)
+      && decades.includes(e.Year.toString())
     });
   }
   return movies;
