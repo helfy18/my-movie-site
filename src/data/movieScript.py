@@ -70,11 +70,15 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             m2 = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={t}&year={y}').json()
             path = m2['results'][0]['poster_path']
 
-            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
-
             tmdbcode = m2["results"][0]["id"]
             if m2["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
                 tmdbcode = m2['results'][1]['id']
+                path = m2['results'][1]['poster_path']
+            if m2['results'][0]['original_title'] == "What's Your Name?":
+                tmdbcode = m2['results'][1]['id']
+                path = m2['results'][1]['poster_path']
+
+            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             if not ws[index + 1][actors].value:
                 m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
                 actorString = ""
