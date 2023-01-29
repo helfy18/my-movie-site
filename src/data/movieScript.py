@@ -16,8 +16,8 @@ ratings = 14
 boxoffice = 15
 rated = 16
 runtime = 17
-budget = 18
-provider = 19
+provider = 18
+budget = 19
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
@@ -28,8 +28,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
             # title and year for search
             t = ws[index + 1][title].value
-            if t != "Scary Movie 2":
-                continue
             y = ws[index + 1][year].value
             # Special Cases
             if t == "The Black Phone":
