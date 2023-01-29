@@ -23,11 +23,13 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
         try:
             # skip entries already filled, comment out if full update required
-            if ws[index + 1][plot].value:
-                continue
+            # if ws[index + 1][plot].value:
+            #     continue
 
             # title and year for search
             t = ws[index + 1][title].value
+            if t != "Scary Movie 2":
+                continue
             y = ws[index + 1][year].value
             # Special Cases
             if t == "The Black Phone":
@@ -54,13 +56,17 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 t = t.replace("&", "\&")
             if t == "Tiptoes":
                 y = '2002'
+            if t == 'Glass Onion: A Knives Out Mystery':
+                t = 'Glass Onion'
             # submit api request
-            m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
 
-            ws[index + 1][director].value = m["Director"]
-            ws[index + 1][ratings].value = str(m["Ratings"])
-            ws[index + 1][rated].value = m["Rated"]
-            ws[index + 1][runtime].value = m["Runtime"]
+            if not ws[index + 1][runtime].value:
+                m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
+
+                ws[index + 1][director].value = m["Director"]
+                ws[index + 1][ratings].value = str(m["Ratings"])
+                ws[index + 1][rated].value = m["Rated"]
+                ws[index + 1][runtime].value = m["Runtime"]
 
             if t == 'Blades of Glory':
                 y = '2007'
@@ -96,7 +102,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 if actorString:
                     ws[index + 1][actors].value = actorString
                 else:
-                    ws[index + 1][actors].value = m["Actors"]
+                    ws[index + 1][actors].value = "N/A"
             m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}?api_key={config.tmdbkey}').json()
             try:
                 boxofficeTotal = m3['revenue']
