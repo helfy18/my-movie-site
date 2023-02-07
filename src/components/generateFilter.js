@@ -37,6 +37,11 @@ export default function GenerateFilter({data}) {
   var exclusive = data.exclusive.distinct.filter((item) => item !== "");
   var holiday = data.holiday.distinct.filter((item) => item !== "");
   var director = data.director.group
+  var runtime = data.runtime.distinct
+  runtime.forEach(function(part, index) {
+    if (typeof(part) === "string") this[index] = parseInt(part.split(" ")[0])
+  }, runtime)
+  runtime = runtime.sort((a, b) => {return a - b})
 
   // Data management for the director filter
   director.sort((a,b) => {return b.totalCount - a.totalCount})
@@ -58,28 +63,31 @@ export default function GenerateFilter({data}) {
     {"Year": years.sort().reverse() },
     {"Director": director},
     {"Decade": decades},
+    {"Runtime": runtime},
   ]
 
   for (var headerIndex in everything) {
-    for (const type in everything[headerIndex]) {
-      let optionsArray = [];
-      if (type === "Genre") {
-        for (let arr of everything[headerIndex][type]) {
-          let subOptionsArray = []
-          for (let entry of arr.options) {
-            subOptionsArray.push({value: entry.fieldValue, label: entry.fieldValue, category: "Genres"})
+    if (headerIndex !== "8"){
+      for (const type in everything[headerIndex]) {
+        let optionsArray = [];
+        if (type === "Genre") {
+          for (let arr of everything[headerIndex][type]) {
+            let subOptionsArray = []
+            for (let entry of arr.options) {
+              subOptionsArray.push({value: entry.fieldValue, label: entry.fieldValue, category: "Genres"})
+            }
+            optionsArray.push({label: arr.label, options: subOptionsArray})
           }
-          optionsArray.push({label: arr.label, options: subOptionsArray})
+        } else {
+          for (let opt of everything[headerIndex][type]) {
+            optionsArray.push({ value: opt, label: opt, category: type});
+          }
         }
-      } else {
-        for (let opt of everything[headerIndex][type]) {
-          optionsArray.push({ value: opt, label: opt, category: type});
-        }
+        everything[headerIndex] = {
+          label: type,
+          options: optionsArray
+        };
       }
-      everything[headerIndex] = {
-        label: type,
-        options: optionsArray
-      };
     }
   }
   return everything;

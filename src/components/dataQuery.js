@@ -1,4 +1,4 @@
-export default function dataQuery(selected, {data}) {
+export default function dataQuery(selected, {data}, runtime) {
   var genre = data.genre.distinct.concat(data.genre_two.distinct.filter((item) => data.genre.distinct.indexOf(item) < 0)).sort();
   var universes = data.universes.distinct;
   var sub_universes = data.sub_universes.distinct;
@@ -17,11 +17,11 @@ export default function dataQuery(selected, {data}) {
   var years_flag = false;
   var directors_flag = false;
   var decades_flag = false;
-  
+  console.log(selected)
   if (selected) {
     for (let object of selected) {
       switch (object.category.toUpperCase()) {
-        case "GENRE":
+        case "GENRES":
           if (!genre_flag) {
             genre = [];
             genre_flag = true;
@@ -86,16 +86,18 @@ export default function dataQuery(selected, {data}) {
           break;
       }
     }
-    movies = movies.filter(function (e) {
-      return (genre.includes(e.Genre) || genre.includes(e.Genre_2))
-      && exclusive.includes(e.Exclusive)
-      && holiday.includes(e.Holiday) 
-      && universes.includes(e.Universe)
-      && sub_universes.includes(e.Sub_Universe)
-      && years.includes(e.Year.toString())
-      && directors.includes(e.Director)
-      && decades.includes(e.Year.toString())
-    });
   }
+  movies = movies.filter(function (e) {
+    return (genre.includes(e.Genre) || genre.includes(e.Genre_2))
+    && exclusive.includes(e.Exclusive)
+    && holiday.includes(e.Holiday) 
+    && universes.includes(e.Universe)
+    && sub_universes.includes(e.Sub_Universe)
+    && years.includes(e.Year.toString())
+    && directors.includes(e.Director)
+    && decades.includes(e.Year.toString())
+    && parseInt(e.Runtime.split(" ")[0]) <= runtime[1]
+    && parseInt(e.Runtime.split(" ")[0]) >= runtime[0]
+  });
   return movies;
 }

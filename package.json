@@ -34,6 +34,7 @@
     "react-grid-system": "^8.1.6",
     "react-router-dom": "^6.4.5",
     "react-search-field": "^2.0.1",
-    "react-select": "^5.4.0"
+    "react-select": "^5.4.0",
+    "react-slider": "^2.0.4"
   }
 }
