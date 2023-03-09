@@ -23,8 +23,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
         try:
             # skip entries already filled, comment out if full update required
-            if ws[index + 1][plot].value:
-                continue
+            # if ws[index + 1][plot].value:
+            #     continue
 
             # title and year for search
             t = ws[index + 1][title].value
@@ -56,9 +56,11 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 y = '2002'
             if t == 'Glass Onion: A Knives Out Mystery':
                 t = 'Glass Onion'
+            if t == 'Marcel the Shell with Shoes On':
+                y = '2021'
             # submit api request
 
-            if not ws[index + 1][runtime].value:
+            # if not ws[index + 1][runtime].value:
                 m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
 
                 ws[index + 1][director].value = m["Director"]
