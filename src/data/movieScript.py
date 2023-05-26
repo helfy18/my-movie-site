@@ -7,17 +7,17 @@ ws = wb.active
 
 # indexes for columns of excel sheet
 title = 0
-year = 8
-plot = 10
-poster = 11
-actors = 12
-director = 13
-ratings = 14
-boxoffice = 15
-rated = 16
-runtime = 17
-provider = 18
-budget = 19
+year = 9
+plot = 11
+poster = 12
+actors = 13
+director = 14
+ratings = 15
+boxoffice = 16
+rated = 17
+runtime = 18
+provider = 19
+budget = 20
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
@@ -51,7 +51,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             if t == 'Blades of Glory':
                 y = '2006'
             if "&" in t:
-                t = t.replace("&", "\&")
+                t = t.replace("&", "%26")
             if t == "Tiptoes":
                 y = '2002'
             if t == 'Glass Onion: A Knives Out Mystery':

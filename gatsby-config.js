@@ -24,6 +24,7 @@ module.exports = {
     {
       resolve: 'gatsby-transformer-excel',
       options: {
+        raw: false,
         defval: "",
       },
     },
