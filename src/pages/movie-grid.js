@@ -13,7 +13,7 @@ import {
 } from "../components/layout.module.css";
 import { Row, Col } from "react-grid-system";
 import SearchField from "react-search-field";
-import Grid from "@mui/material/Grid";
+import { Slider, Grid } from "@mui/material";
 
 function searchFilter(text, data) {
   var newData = [];
@@ -23,7 +23,8 @@ function searchFilter(text, data) {
       index.Actors.toLowerCase().includes(text.toLowerCase()) ||
       index.Director.toLowerCase().includes(text.toLowerCase()) ||
       index.Universe.toLowerCase().includes(text.toLowerCase()) ||
-      index.Sub_Universe.toLowerCase().includes(text.toLowerCase())
+      index.Sub_Universe.toLowerCase().includes(text.toLowerCase()) ||
+      index.Studio.toLowerCase().includes(text.toLowerCase())
     ) {
       newData.push(index);
     }
@@ -58,16 +59,33 @@ const GridPage = ({ data }) => {
     }
   }
 
+  const handleChange = (event, newValue) => {
+    setSliderValue(newValue);
+  };
+
   function resetFilter() {
-    setTable(dataQuery([], { data }));
-    setShowDropdown(false);
     setSelected([]);
+    setSliderValue([0, 1000]);
+    setTable(dataQuery([], { data }, sliderValue));
+    setShowDropdown(false);
   }
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [table, setTable] = useState(nodes);
   const [selected, setSelected] = useState(null);
   const filter = GenerateFilter({ data });
+  const [sliderValue, setSliderValue] = useState([0, 1000]);
+
+  function getSelected(type) {
+    var defselected = [];
+    selected
+      ? selected.forEach((value) => {
+          if (type.toLowerCase() === value.category.toLowerCase())
+            defselected.push(value);
+        })
+      : (defselected = []);
+    return defselected;
+  }
 
   return (
     <div>
@@ -79,8 +97,14 @@ const GridPage = ({ data }) => {
               classNames={searchBar}
               placeholder="Search for Title, Actor, Director..."
               onChange={(value) =>
-                searchFilter(value, dataQuery(selected, { data })).length !== 0
-                  ? setTable(searchFilter(value, dataQuery(selected, { data })))
+                searchFilter(value, dataQuery(selected, { data }, sliderValue))
+                  .length !== 0
+                  ? setTable(
+                      searchFilter(
+                        value,
+                        dataQuery(selected, { data }, sliderValue)
+                      )
+                    )
                   : setTable(nodes)
               }
             />
@@ -118,7 +142,8 @@ const GridPage = ({ data }) => {
               <button
                 style={{ width: "40%", borderRadius: "8px" }}
                 onClick={() => {
-                  setTable(dataQuery(selected, { data }));
+                  setShowDropdown(!showDropdown);
+                  setTable(dataQuery(selected, { data }, sliderValue));
                 }}
               >
                 Apply
@@ -140,30 +165,60 @@ const GridPage = ({ data }) => {
               </button>
             </Grid>
             {filter.map((opt) => {
-              return (
-                <Grid xs={6} item={true} key={`${opt["label"]}-12`}>
-                  <div
-                    key={`${opt["label"]}-select-picker`}
-                    style={{ textAlign: "center" }}
-                  >
-                    {opt["label"]}
-                  </div>
-                  <Select
-                    className={reactSelectContainer}
-                    classNamePrefix="react-select"
-                    options={opt["options"]}
-                    isMulti
-                    closeMenuOnSelect={false}
-                    isSearchable
-                    placeholder={`Ex: ${opt["options"][0]["label"]}, ${opt["options"][1]["label"]}`}
-                    onChange={(e) => {
-                      setSelected((prevState) =>
-                        selectedOptions(prevState, e, opt["label"])
-                      );
-                    }}
-                  ></Select>
-                </Grid>
-              );
+              if (!opt["Runtime"]) {
+                return (
+                  <Grid xs={12} md={6} item={true} key={`${opt["label"]}-12`}>
+                    <div
+                      key={`${opt["label"]}-select-picker`}
+                      style={{ textAlign: "center" }}
+                    >
+                      {opt["label"]}
+                    </div>
+                    <Select
+                      className={reactSelectContainer}
+                      classNamePrefix="react-select"
+                      defaultValue={getSelected(opt["label"])}
+                      options={opt["options"]}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      isSearchable
+                      placeholder={
+                        opt["label"] === "Genre"
+                          ? "Ex: Animated, Horror"
+                          : `Ex: ${opt["options"][0]["label"]}`
+                      }
+                      onChange={(e) => {
+                        setSelected((prevState) =>
+                          selectedOptions(prevState, e, opt["label"])
+                        );
+                      }}
+                    ></Select>
+                  </Grid>
+                );
+              } else {
+                return (
+                  <Grid xs={12} md={6} item={true} key={`runtime-12`}>
+                    <div key={`runtime-slider`} style={{ textAlign: "center" }}>
+                      Runtime
+                    </div>
+                    <Slider
+                      min={opt["Runtime"][0]}
+                      max={opt["Runtime"][opt["Runtime"].length - 1]}
+                      onChange={handleChange}
+                      style={{
+                        width: "95%",
+                        marginLeft: "2.5%",
+                        color: "#55CBCD",
+                      }}
+                      value={sliderValue}
+                      valueLabelDisplay="auto"
+                      valueLabelFormat={(x) => {
+                        return `${x} min`;
+                      }}
+                    />
+                  </Grid>
+                );
+              }
             })}
           </Grid>
         ) : null}
@@ -198,6 +253,22 @@ export const query = graphql`
     holiday: allMovieMovieMoviesXlsxMasterlist {
       distinct(field: Holiday)
     }
+    studio: allMovieMovieMoviesXlsxMasterlist {
+      distinct(field: Studio)
+    }
+    rated: allMovieMovieMoviesXlsxMasterlist {
+      distinct(field: Rated)
+    }
+    universes_together: allMovieMovieMoviesXlsxMasterlist {
+      group(field: Universe) {
+        totalCount
+        fieldValue
+        group(field: Sub_Universe) {
+          totalCount
+          fieldValue
+        }
+      }
+    }
     genrealt: allMovieMovieMoviesXlsxMasterlist {
       group(field: Genre) {
         fieldValue
@@ -209,6 +280,18 @@ export const query = graphql`
         fieldValue
         totalCount
       }
+    }
+    director: allMovieMovieMoviesXlsxMasterlist {
+      group(field: Director) {
+        fieldValue
+        totalCount
+      }
+    }
+    directors: allMovieMovieMoviesXlsxMasterlist {
+      distinct(field: Director)
+    }
+    runtime: allMovieMovieMoviesXlsxMasterlist {
+      distinct(field: Runtime)
     }
     movies: allMovieMovieMoviesXlsxMasterlist {
       nodes {
