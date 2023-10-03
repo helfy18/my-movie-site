@@ -23,7 +23,8 @@ function searchFilter(text, data) {
       index.Actors.toLowerCase().includes(text.toLowerCase()) ||
       index.Director.toLowerCase().includes(text.toLowerCase()) ||
       index.Universe.toLowerCase().includes(text.toLowerCase()) ||
-      index.Sub_Universe.toLowerCase().includes(text.toLowerCase())
+      index.Sub_Universe.toLowerCase().includes(text.toLowerCase()) ||
+      index.Studio.toLowerCase().includes(text.toLowerCase())
     ) {
       newData.push(index);
     }
@@ -74,6 +75,17 @@ const GridPage = ({ data }) => {
   const [selected, setSelected] = useState(null);
   const filter = GenerateFilter({ data });
   const [sliderValue, setSliderValue] = useState([0, 1000]);
+
+  function getSelected(type) {
+    var defselected = [];
+    selected
+      ? selected.forEach((value) => {
+          if (type.toLowerCase() === value.category.toLowerCase())
+            defselected.push(value);
+        })
+      : (defselected = []);
+    return defselected;
+  }
 
   return (
     <div>
@@ -165,6 +177,7 @@ const GridPage = ({ data }) => {
                     <Select
                       className={reactSelectContainer}
                       classNamePrefix="react-select"
+                      defaultValue={getSelected(opt["label"])}
                       options={opt["options"]}
                       isMulti
                       closeMenuOnSelect={false}
@@ -240,6 +253,22 @@ export const query = graphql`
     holiday: allMovieMovieMoviesXlsxMasterlist {
       distinct(field: Holiday)
     }
+    studio: allMovieMovieMoviesXlsxMasterlist {
+      distinct(field: Studio)
+    }
+    rated: allMovieMovieMoviesXlsxMasterlist {
+      distinct(field: Rated)
+    }
+    universes_together: allMovieMovieMoviesXlsxMasterlist {
+      group(field: Universe) {
+        totalCount
+        fieldValue
+        group(field: Sub_Universe) {
+          totalCount
+          fieldValue
+        }
+      }
+    }
     genrealt: allMovieMovieMoviesXlsxMasterlist {
       group(field: Genre) {
         fieldValue
@@ -273,6 +302,7 @@ export const query = graphql`
         Genre
         Genre_2
         Exclusive
+        Studio
         Holiday
         Year
         Plot
