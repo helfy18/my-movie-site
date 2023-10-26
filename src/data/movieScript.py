@@ -58,6 +58,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 t = 'Glass Onion'
             if t == 'Marcel the Shell with Shoes On':
                 y = '2021'
+            if t == 'M3GAN':
+                y = '2022'
             # submit api request
 
             if not ws[index + 1][runtime].value:
@@ -119,6 +121,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             else:
                 ws[index + 1][provider].value = "N/A"
             wb.save('MovieMovieMovies.xlsx')
-        except:
-            print(t, y)
+        except Exception as e:
+            print(t, y, e)
             sys.exit()
