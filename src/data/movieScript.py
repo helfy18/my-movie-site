@@ -85,6 +85,13 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
                 tmdbcode = m2['results'][1]['id']
                 path = m2['results'][1]['poster_path']
 
+            url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
+            headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
+            value = round((ws[index + 1][1].value)/5)/2
+            if value == 0.0:
+                value = 0.5
+            data = {"value": value}
+            response = requests.post(url, headers=headers, json=data).json()
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             if not ws[index + 1][actors].value:
                 m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
