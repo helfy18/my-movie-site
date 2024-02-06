@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="http://jdmovies.gtsb.io">
+  <a href="http://jd-movies.netlify.app">
     <img alt="Toy Story" src="https://stickershop.line-scdn.net/sticonshop/v1/product/5b337485031a671b9c23d56d/iPhone/main.png" width="60" />
   </a>
 </p>
