@@ -305,16 +305,10 @@ export const query = graphql`
         Studio
         Holiday
         Year
-        Plot
         Poster
         Rated
-        Ratings
-        Review
         Runtime
-        BoxOffice
-        Actors
-        Director
-        Budget
+        TMDBId
         id
       }
     }
