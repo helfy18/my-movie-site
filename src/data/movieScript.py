@@ -18,13 +18,14 @@ rated = 17
 runtime = 18
 provider = 19
 budget = 20
+tmdbid = 21
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
-        try:
+        # try:
             # skip entries already filled, comment out if full update required
-            if ws[index + 1][plot].value:
-                continue
+            # if ws[index + 1][plot].value:
+            #     continue
 
             # title and year for search
             t = ws[index + 1][title].value
@@ -120,7 +121,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][plot].value = m3["overview"]
             ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
             ws[index + 1][budget].value = f"{m3['budget']:,}"
-            ws[index + 1][plot].value = m3['overview']
+            ws[index + 1][tmdbid].value = tmdbcode
             
             m4 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
             if m4['results'] and 'CA' in m4['results']:
@@ -128,6 +129,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             else:
                 ws[index + 1][provider].value = "N/A"
             wb.save('MovieMovieMovies.xlsx')
-        except Exception as e:
-            print(t, y, e)
-            sys.exit()
+        # except Exception as e:
+        #     print(t, y, e)
+        #     sys.exit()

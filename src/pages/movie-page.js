@@ -1,9 +1,11 @@
 import * as React from "react";
+import { graphql, useStaticQuery } from "gatsby";
 import Layout from "../components/layout";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Gradient from "javascript-color-gradient";
+import { StaticImage } from "gatsby-plugin-image";
 
 function getGenres(data) {
   let genreString = data.Genre;
@@ -93,93 +95,185 @@ const gradientArray = new Gradient()
   .getColors();
 
 const MoviePage = ({ location }) => {
-  if (location.state) {
-    return (
-      <div>
-        <Layout pageTitle="Movies :)">
-          <Grid container spacing={2.5}>
-            <Grid item xs textAlign="center">
-              <img
-                src={location.state.from.Poster}
-                width="275px"
-                alt="Not Found"
-              ></img>
-            </Grid>
-            <Grid item sm={12} margin={"1rem"} md={5} marginTop={0}>
-              <table id="infoTable" className="table">
-                <tbody>
-                  <tr>
-                    <td>Title</td>
-                    <td>{location.state.from.Movie}</td>
-                  </tr>
-                  <tr>
-                    <td>Score</td>
-                    <td
-                      style={{
-                        color: gradientArray[location.state.from.Score],
-                        fontWeight: "bolder",
-                      }}
-                    >
-                      {location.state.from.Score}/100
-                    </td>
-                  </tr>
-                  {getUniverse(location.state.from.Universe)}
-                  {getSubUniverse(location.state.from.Sub_Universe)}
-                  {getGenres(location.state.from)}
-                  {getExclusive(location.state.from.Exclusive)}
-                  {getHoliday(location.state.from.Holiday)}
-                  <tr>
-                    <td>Year</td>
-                    <td>{location.state.from.Year}</td>
-                  </tr>
-                  <tr>
-                    <td>MPA Rating</td>
-                    <td>{location.state.from.Rated}</td>
-                  </tr>
-                  <tr>
-                    <td>Runtime</td>
-                    <td>{location.state.from.Runtime}</td>
-                  </tr>
-                  <tr>
-                    <td>Budget</td>
-                    <td>${location.state.from.Budget}</td>
-                  </tr>
-                  <tr>
-                    <td>Box Office</td>
-                    <td>${location.state.from.BoxOffice}</td>
-                  </tr>
-                  <tr>
-                    <td>Actors</td>
-                    <td>{location.state.from.Actors}</td>
-                  </tr>
-                  <tr>
-                    <td>Director</td>
-                    <td>{location.state.from.Director}</td>
-                  </tr>
-                  <tr>
-                    <td>Studio</td>
-                    <td>{location.state.from.Studio}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </Grid>
-            <Grid item sm={12} margin={"1rem"} marginTop={0} lg>
-              <Item>
-                Plot:
-                <br />
-                {location.state.from.Plot}
-              </Item>
-              <br />
-              {getReview(location.state.from.Review)}
-            </Grid>
+  const data = useStaticQuery(graphql`
+    query {
+      movies: allMovieMovieMoviesXlsxMasterlist {
+        nodes {
+          Movie
+          Score
+          Universe
+          Sub_Universe
+          Genre
+          Genre_2
+          Exclusive
+          Studio
+          Holiday
+          Year
+          Plot
+          Poster
+          Rated
+          Ratings
+          Review
+          Runtime
+          BoxOffice
+          Actors
+          Director
+          Budget
+          TMDBId
+          id
+        }
+      }
+    }
+  `);
+
+  const tmdbId = new URLSearchParams(location.search).get("id");
+
+  const currMovie = data.movies.nodes.filter(
+    (movie) => movie.TMDBId === tmdbId
+  )[0];
+
+  return currMovie ? (
+    <div>
+      <Layout pageTitle="Movies :)">
+        <Grid container spacing={2.5}>
+          <Grid item xs textAlign="center">
+            <img src={currMovie.Poster} width="275px" alt="Not Found"></img>
           </Grid>
-          {/* {JSON.stringify(location.state.from.Ratings, null, 2)} */}
-        </Layout>
-      </div>
-    );
-  } else {
-    return <Layout></Layout>;
-  }
+          <Grid item sm={12} margin={"1rem"} md={5} marginTop={0}>
+            <table id="infoTable" className="table">
+              <tbody>
+                <tr>
+                  <td>Title</td>
+                  <td>{currMovie.Movie}</td>
+                </tr>
+                <tr>
+                  <td>Score</td>
+                  <td
+                    style={{
+                      color: gradientArray[currMovie.Score],
+                      fontWeight: "bolder",
+                    }}
+                  >
+                    {currMovie.Score}/100
+                  </td>
+                </tr>
+                {getUniverse(currMovie.Universe)}
+                {getSubUniverse(currMovie.Sub_Universe)}
+                {getGenres(currMovie)}
+                {getExclusive(currMovie.Exclusive)}
+                {getHoliday(currMovie.Holiday)}
+                <tr>
+                  <td>Year</td>
+                  <td>{currMovie.Year}</td>
+                </tr>
+                <tr>
+                  <td>MPA Rating</td>
+                  <td>{currMovie.Rated}</td>
+                </tr>
+                <tr>
+                  <td>Runtime</td>
+                  <td>{currMovie.Runtime}</td>
+                </tr>
+                <tr>
+                  <td>Budget</td>
+                  <td>${currMovie.Budget}</td>
+                </tr>
+                <tr>
+                  <td>Box Office</td>
+                  <td>${currMovie.BoxOffice}</td>
+                </tr>
+                <tr>
+                  <td>Actors</td>
+                  <td>{currMovie.Actors}</td>
+                </tr>
+                <tr>
+                  <td>Director</td>
+                  <td>{currMovie.Director}</td>
+                </tr>
+                <tr>
+                  <td>Studio</td>
+                  <td>{currMovie.Studio}</td>
+                </tr>
+              </tbody>
+            </table>
+          </Grid>
+          <Grid
+            item
+            sm={12}
+            margin={"1rem"}
+            marginTop={0}
+            lg
+            textAlign="center"
+          >
+            <Item>
+              Plot:
+              <br />
+              {currMovie.Plot}
+            </Item>
+            <br />
+            {getReview(currMovie.Review)}
+            <br />
+            <table>
+              <tbody>
+                {JSON.parse(currMovie.Ratings.replaceAll("'", '"')).map(
+                  (rating) => {
+                    switch (rating["Source"]) {
+                      case "Internet Movie Database":
+                        return (
+                          <tr key="imdb">
+                            <td>
+                              {" "}
+                              <StaticImage
+                                src="../images/imdb.png"
+                                height={40}
+                                alt=""
+                              />
+                            </td>
+                            <td>{rating.Value}</td>
+                          </tr>
+                        );
+                      case "Rotten Tomatoes":
+                        return (
+                          <tr key="rt">
+                            <td>
+                              {" "}
+                              <StaticImage
+                                src="../images/rt.png"
+                                height={40}
+                                alt=""
+                              />
+                            </td>
+                            <td>{rating.Value}</td>
+                          </tr>
+                        );
+                      case "Metacritic":
+                        return (
+                          <tr key="metacritic">
+                            <td>
+                              {" "}
+                              <StaticImage
+                                src="../images/metacritic.png"
+                                height={40}
+                                alt=""
+                              />
+                            </td>
+                            <td>{rating.Value}</td>
+                          </tr>
+                        );
+                      default:
+                        return <Item></Item>;
+                    }
+                  }
+                )}
+              </tbody>
+            </table>
+          </Grid>
+        </Grid>
+      </Layout>
+    </div>
+  ) : (
+    "Not Found"
+  );
 };
 
 export default MoviePage;

@@ -315,6 +315,7 @@ export const query = graphql`
         Actors
         Director
         Budget
+        TMDBId
         id
       }
     }
