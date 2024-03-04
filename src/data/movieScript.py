@@ -1,5 +1,5 @@
 from openpyxl import *
-import requests, sys, config
+import requests, config
 
 # ws contains the main sheet (MasterList)
 wb = load_workbook('MovieMovieMovies.xlsx')
@@ -22,113 +22,111 @@ tmdbid = 21
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
-        # try:
-            # skip entries already filled, comment out if full update required
-            # if ws[index + 1][plot].value:
-            #     continue
+        # skip entries already filled, comment out if full update required
+        if ws[index + 1][plot].value:
+            continue
 
-            # title and year for search
-            t = ws[index + 1][title].value
-            y = ws[index + 1][year].value
-            # Special Cases
-            if t == "The Black Phone":
-                y = '2021'
-            if t == "Monty Python's Life of Brian":
-                t = "Life of Brian"
-            if t == "The Lion King 1 1/2":
-                t = "The Lion King 3"
-            if "Batman v Superman" in t:
-                t = "Batman v Superman"
-            if t == "Mom and Dad":
-                y = '2017'
-            if t == "Aladdin 2: The Return of Jafar":
-                t = "The Return of Jafar"
-            if t == "Fant4stic":
-                t = "Fantastic Four"
-            if "Kangaroo Jack:" in t and y == 2004:
-                t = "Kangaroo Jack 2"
-            if t == "Cyrano":
-                y = '2021'
-            if t == 'Blades of Glory':
-                y = '2006'
-            if "&" in t:
-                t = t.replace("&", "%26")
-            if t == "Tiptoes":
-                y = '2002'
-            if t == 'Glass Onion: A Knives Out Mystery':
-                t = 'Glass Onion'
-            if t == 'Marcel the Shell with Shoes On':
-                y = '2021'
-            if t == 'M3GAN':
-                y = '2022'
-            # submit api request
+        # title and year for search
+        title = ws[index + 1][title].value
+        year = ws[index + 1][year].value
+        # Special Cases
+        if title == "The Black Phone":
+            year = '2021'
+        if title == "Monty Python's Life of Brian":
+            title = "Life of Brian"
+        if title == "The Lion King 1 1/2":
+            title = "The Lion King 3"
+        if "Batman v Superman" in title:
+            title = "Batman v Superman"
+        if title == "Mom and Dad":
+            year = '2017'
+        if title == "Aladdin 2: The Return of Jafar":
+            title = "The Return of Jafar"
+        if title == "Fant4stic":
+            title = "Fantastic Four"
+        if "Kangaroo Jack:" in title and year == 2004:
+            title = "Kangaroo Jack 2"
+        if title == "Cyrano":
+            year = '2021'
+        if title == 'Blades of Glory':
+            year = '2006'
+        if "&" in title:
+            title = title.replace("&", "%26")
+        if title == "Tiptoes":
+            year = '2002'
+        if title == 'Glass Onion: A Knives Out Mystery':
+            title = 'Glass Onion'
+        if title == 'Marcel the Shell with Shoes On':
+            year = '2021'
+        if title == 'M3GAN':
+            year = '2022'
+        # submit api request
 
-            if not ws[index + 1][runtime].value:
-                m = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={t}&y={y}&type=movie').json()
-                ws[index + 1][director].value = m["Director"]
-                ws[index + 1][ratings].value = str(m["Ratings"])
-                ws[index + 1][rated].value = m["Rated"]
-                ws[index + 1][runtime].value = m["Runtime"]
+        if not ws[index + 1][ratings].value:
+            omdb = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={title}&y={year}&type=movie').json()
+            ws[index + 1][ratings].value = str(omdb["Ratings"])
+            ws[index + 1][rated].value = omdb["Rated"]
 
-            if t == 'Blades of Glory':
-                y = '2007'
-            if t == "Tiptoes":
-                y = '2003'
-            # if not (ws[index + 1][actors].value and ws[index + 1][boxoffice].value and ws[index+1][budget].value):
-            m2 = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={t}&year={y}').json()
-            path = m2['results'][0]['poster_path']
-
-            tmdbcode = m2["results"][0]["id"]
-            if m2["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
-                tmdbcode = m2['results'][1]['id']
-                path = m2['results'][1]['poster_path']
-            if m2['results'][0]['original_title'] == "What's Your Name?":
-                tmdbcode = m2['results'][1]['id']
-                path = m2['results'][1]['poster_path']
-
-            url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
-            headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
-            value = round((ws[index + 1][1].value)/5)/2
-            if value == 0.0:
-                value = 0.5
-            data = {"value": value}
-            response = requests.post(url, headers=headers, json=data).json()
-            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
-            if not ws[index + 1][actors].value:
-                m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
-                actorString = ""
-                count = 1
-                for actor in m3["cast"]:
-                    if count < 8:
-                        actorString = f'{actorString}{actor["name"]}, '
-                        count = count + 1
-                    else:
-                        actorString = f'{actorString}{actor["name"]}'
-                        break
-                if actorString and actorString[-2] == ",":
-                    actorString = actorString[:-2]
-                print(t, actorString)
-                if actorString:
-                    ws[index + 1][actors].value = actorString
+        if title == 'Blades of Glory':
+            year = '2007'
+        if title == "Tiptoes":
+            year = '2003'
+        
+        search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
+        path = search['results'][0]['poster_path']
+        tmdbcode = search["results"][0]["id"]
+        if search["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
+            tmdbcode = search['results'][1]['id']
+            path = search['results'][1]['poster_path']
+        if search['results'][0]['original_title'] == "What's Your Name?":
+            tmdbcode = search['results'][1]['id']
+            path = search['results'][1]['poster_path']
+        
+        ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
+        if not ws[index + 1][actors].value:
+            castAndCrew = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
+            actorString = ""
+            count = 1
+            for actor in castAndCrew["cast"]:
+                if count < 8:
+                    actorString = f'{actorString}{actor["name"]}, '
+                    count = count + 1
                 else:
-                    ws[index + 1][actors].value = "N/A"
-            m3 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}?api_key={config.tmdbkey}').json()
-            try:
-                boxofficeTotal = m3['revenue']
-            except KeyError:
-                boxofficeTotal = 'N/A'
-
-            ws[index + 1][plot].value = m3["overview"]
-            ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
-            ws[index + 1][budget].value = f"{m3['budget']:,}"
-            ws[index + 1][tmdbid].value = tmdbcode
-            
-            m4 = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
-            if m4['results'] and 'CA' in m4['results']:
-                ws[index + 1][provider].value = str(m4['results']['CA'])
+                    actorString = f'{actorString}{actor["name"]}'
+                    break
+            if actorString and actorString[-2] == ",":
+                actorString = actorString[:-2]
+            print(title, actorString)
+            if actorString:
+                ws[index + 1][actors].value = actorString
             else:
-                ws[index + 1][provider].value = "N/A"
-            wb.save('MovieMovieMovies.xlsx')
-        # except Exception as e:
-        #     print(t, y, e)
-        #     sys.exit()
+                ws[index + 1][actors].value = "N/A"
+            
+            ws[index + 1][director].value = ', '.join(credit["name"] for credit in castAndCrew["crew"] if credit["job"] == "Director")
+        
+        movieInfo = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}?api_key={config.tmdbkey}').json()
+        try:
+            boxofficeTotal = movieInfo['revenue']
+        except KeyError:
+            boxofficeTotal = 'N/A'
+        ws[index + 1][plot].value = movieInfo["overview"]
+        ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
+        ws[index + 1][budget].value = f"{movieInfo['budget']:,}"
+        ws[index + 1][runtime].value = f"{movieInfo['runtime']:,} min"
+        ws[index + 1][tmdbid].value = tmdbcode
+        
+        providers = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
+        if providers['results'] and 'CA' in providers['results']:
+            ws[index + 1][provider].value = str(providers['results']['CA'])
+        else:
+            ws[index + 1][provider].value = "N/A"
+
+        url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
+        headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
+        value = round((ws[index + 1][1].value)/5)/2
+        if value == 0.0:
+            value = 0.5
+        data = {"value": value}
+        response = requests.post(url, headers=headers, json=data).json()
+        
+        wb.save('MovieMovieMovies.xlsx')
