@@ -60,6 +60,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             year = '2021'
         if title == 'M3GAN':
             year = '2022'
+        if title == 'Heathers':
+            year = '1988'
         # submit api request
 
         if not ws[index + 1][ratings].value:
@@ -71,6 +73,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             year = '2007'
         if title == "Tiptoes":
             year = '2003'
+        if title == 'Heathers':
+            year = '1989'
         
         search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
         path = search['results'][0]['poster_path']
