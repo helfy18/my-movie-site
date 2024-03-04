@@ -41,23 +41,6 @@ function selectedOptions(data, toAdd, label) {
 
 const GridPage = ({ data }) => {
   const nodes = data.movies.nodes;
-  // Sort the data in descending score
-  nodes.sort((a, b) => {
-    return b.Score - a.Score;
-  });
-  // Parse the ratings from string to object
-  for (let index in nodes) {
-    //nodes[index] = Object.assign({"Overall Rank": i++}, nodes[index] );
-    if (typeof nodes[index].Ratings !== "string") {
-      try {
-        nodes[index].Ratings = JSON.parse(
-          nodes[index].Ratings.replace(/'/g, '"')
-        );
-      } catch (err) {
-        console.log(nodes[index]);
-      }
-    }
-  }
 
   const handleChange = (event, newValue) => {
     setSliderValue(newValue);
@@ -72,7 +55,7 @@ const GridPage = ({ data }) => {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [table, setTable] = useState(nodes);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState([]);
   const filter = GenerateFilter({ data });
   const [sliderValue, setSliderValue] = useState([0, 1000]);
 
@@ -305,16 +288,12 @@ export const query = graphql`
         Studio
         Holiday
         Year
-        Plot
         Poster
         Rated
         Ratings
-        Review
         Runtime
-        BoxOffice
         Actors
         Director
-        Budget
         TMDBId
         id
       }

@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Gradient from "javascript-color-gradient";
 import { StaticImage } from "gatsby-plugin-image";
+import { getProviderLink } from "../utils";
 
 function getGenres(data) {
   let genreString = data.Genre;
@@ -121,6 +122,7 @@ const MoviePage = ({ location }) => {
           Budget
           TMDBId
           id
+          Provider
         }
       }
     }
@@ -131,6 +133,8 @@ const MoviePage = ({ location }) => {
   const currMovie = data.movies.nodes.filter(
     (movie) => movie.TMDBId === tmdbId
   )[0];
+
+  const providers = JSON.parse(currMovie.Provider.replaceAll("'", '"'));
 
   return currMovie ? (
     <div>
@@ -193,6 +197,54 @@ const MoviePage = ({ location }) => {
                 <tr>
                   <td>Studio</td>
                   <td>{currMovie.Studio}</td>
+                </tr>
+              </tbody>
+            </table>
+            <br />
+            <table>
+              <th colSpan={2}>Providers - Brought to You By JustWatch.com</th>
+              <tbody>
+                <tr key="stream">
+                  <td>With Account</td>
+                  <td>
+                    {providers.flatrate?.map((provider) => {
+                      return (
+                        <a
+                          href={getProviderLink(provider.provider_id)}
+                          target="_blank"
+                          style={{ paddingRight: "1rem" }}
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={`https://image.tmdb.org/t/p/w154/${provider.logo_path}`}
+                            height={45}
+                            alt="provider"
+                          ></img>
+                        </a>
+                      );
+                    })}
+                  </td>
+                </tr>
+                <tr key="rent">
+                  <td>For Rent</td>
+                  <td>
+                    {providers.rent?.map((provider) => {
+                      return (
+                        <a
+                          href={getProviderLink(provider.provider_id)}
+                          target="_blank"
+                          style={{ paddingRight: "1rem" }}
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={`https://image.tmdb.org/t/p/w154/${provider.logo_path}`}
+                            height={45}
+                            alt="provider"
+                          ></img>
+                        </a>
+                      );
+                    })}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -269,6 +321,13 @@ const MoviePage = ({ location }) => {
             </table>
           </Grid>
         </Grid>
+        {console.log(
+          JSON.stringify(
+            JSON.parse(currMovie.Provider.replaceAll("'", '"')),
+            null,
+            2
+          )
+        )}
       </Layout>
     </div>
   ) : (
