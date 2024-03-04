@@ -1,90 +1,93 @@
+.container {
+  margin-left: 3rem;
+  margin-right: 3rem;
+  margin: 1% 5%;
+  font-family: sans-serif;
+}
+.heading {
+  color: rgba(11, 164, 184, 0.842);
+  text-align: center;
+}
+.nav-links {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+}
+.nav-link-item {
+  padding-right: 2rem;
+}
+.nav-link-text {
+  color: black;
+}
+.site-title {
+  font-size: 2.5rem;
+  color: rgba(11, 164, 184, 0.842);
+  font-weight: 700;
+  text-align: center;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  border-right: 1px solid;
+  border-color: black;
+}
+
+th {
+  background-color: rgba(11, 164, 184, 0.842);
+  color: white;
+}
+
+tr {
+  border-bottom: 1px solid;
+}
+
+table {
+  border: 1px solid;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+button {
+  background-color: #55cbcd;
+  border: 2px solid darkgrey;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.2rem;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 0 1px 0 #000;
+}
+
+button:hover {
+  background-color: #5bd8da;
+}
+
+.react-select-container {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.react-grid {
+  margin-left: 0rem !important;
+  margin-right: 0rem !important;
+  padding-bottom: 2rem;
+}
+
+.search-bar {
+  width: 99%;
+}
+
+@media (max-width: 480px) {
   .container {
-    margin-left: 3rem;
-    margin-right: 3rem;
-    margin: 1% 5%;
-    font-family: sans-serif;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
   }
-  .heading {
-    color: rgba(11, 164, 184, 0.842);
-    text-align: center;
-  }
-  .nav-links {
-    display: flex;
-    list-style: none;
-    justify-content: center;
-  }
-  .nav-link-item {
-    padding-right: 2rem;
-  }
-  .nav-link-text {
-    color: black;
-  }
-  .site-title {
-      font-size: 2.5rem;
-      color: rgba(11, 164, 184, 0.842);
-      font-weight: 700;
-      text-align: center;
-  }
+}
 
-  th, td {
-    padding: 0.5rem;
-    border-right: 1px solid;
-    border-color: black;
-  }
-
-  th {
-    background-color: rgba(11, 164, 184, 0.842);
-    color: white;
-  }
-
-  tr {
-    border-bottom: 1px solid;
-  }
-
-  table {
-    border: 1px solid;
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  button {
-    background-color: #55CBCD ;
-    border: 2px solid darkgrey;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 1.2rem;
-    height: 100%;
-    width: 100%;
-    cursor: pointer;
-    box-shadow: 0 0 1px 0 #000;
-  }
-
-  button:hover {
-    background-color: #5bd8da;
-  }
-
-  .react-select-container {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .react-grid {
-    margin-left: 0rem !important;
-    margin-right: 0rem !important;
-    padding-bottom: 2rem;
-  }
-
-  .search-bar {
-    width: 99%;
-  }
-
-  @media (max-width: 480px) {
-    .container {
-      margin-left: 0.2rem;
-      margin-right: 0.2rem;
-    }
-  }
-
-  tr:nth-child(even) {background-color: #f2f2f2;}
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
