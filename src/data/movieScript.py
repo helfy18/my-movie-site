@@ -6,8 +6,8 @@ wb = load_workbook('MovieMovieMovies.xlsx')
 ws = wb.active
 
 # indexes for columns of excel sheet
-title = 0
-year = 9
+titleIndex = 0
+yearIndex = 9
 plot = 11
 poster = 12
 actors = 13
@@ -27,8 +27,9 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             continue
 
         # title and year for search
-        title = ws[index + 1][title].value
-        year = ws[index + 1][year].value
+        title = ws[index + 1][titleIndex].value
+        year = ws[index + 1][yearIndex].value
+
         # Special Cases
         if title == "The Black Phone":
             year = '2021'
@@ -76,17 +77,22 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         if title == 'Heathers':
             year = '1989'
         
-        search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
-        path = search['results'][0]['poster_path']
-        tmdbcode = search["results"][0]["id"]
-        if search["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
-            tmdbcode = search['results'][1]['id']
-            path = search['results'][1]['poster_path']
-        if search['results'][0]['original_title'] == "What's Your Name?":
-            tmdbcode = search['results'][1]['id']
-            path = search['results'][1]['poster_path']
-        
-        ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
+        if not ws[index + 1][tmdbid].value:
+            search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
+            path = search['results'][0]['poster_path']
+            tmdbcode = search["results"][0]["id"]
+            if search["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
+                tmdbcode = search['results'][1]['id']
+                path = search['results'][1]['poster_path']
+            if search['results'][0]['original_title'] == "What's Your Name?":
+                tmdbcode = search['results'][1]['id']
+                path = search['results'][1]['poster_path']
+            
+            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
+            ws[index + 1][tmdbid].value = tmdbcode
+        else:
+            tmdbcode = ws[index + 1][tmdbid].value
+
         if not ws[index + 1][actors].value:
             castAndCrew = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
             actorString = ""
@@ -117,13 +123,12 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
         ws[index + 1][budget].value = f"{movieInfo['budget']:,}"
         ws[index + 1][runtime].value = f"{movieInfo['runtime']:,} min"
-        ws[index + 1][tmdbid].value = tmdbcode
         
         providers = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
         if providers['results'] and 'CA' in providers['results']:
             ws[index + 1][provider].value = str(providers['results']['CA'])
         else:
-            ws[index + 1][provider].value = "N/A"
+            ws[index + 1][provider].value = "{" + "}"
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
         headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
@@ -132,5 +137,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             value = 0.5
         data = {"value": value}
         response = requests.post(url, headers=headers, json=data).json()
+
+        print(title, year)
         
         wb.save('MovieMovieMovies.xlsx')
