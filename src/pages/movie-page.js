@@ -134,7 +134,12 @@ const MoviePage = ({ location }) => {
     (movie) => movie.TMDBId === tmdbId
   )[0];
 
-  const providers = JSON.parse(currMovie.Provider.replaceAll("'", '"'));
+  var providers;
+  try {
+    providers = JSON.parse(currMovie.Provider.replaceAll("'", '"'));
+  } catch (err) {
+    providers = [];
+  }
 
   return currMovie ? (
     <div>
@@ -202,7 +207,13 @@ const MoviePage = ({ location }) => {
             </table>
             <br />
             <table>
-              <th colSpan={2}>Providers - Brought to You By JustWatch.com</th>
+              <thead>
+                <tr>
+                  <th colSpan={2}>
+                    Providers - Brought to You By JustWatch.com
+                  </th>
+                </tr>
+              </thead>
               <tbody>
                 <tr key="stream">
                   <td>With Account</td>
@@ -321,13 +332,6 @@ const MoviePage = ({ location }) => {
             </table>
           </Grid>
         </Grid>
-        {console.log(
-          JSON.stringify(
-            JSON.parse(currMovie.Provider.replaceAll("'", '"')),
-            null,
-            2
-          )
-        )}
       </Layout>
     </div>
   ) : (
