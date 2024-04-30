@@ -16,7 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
   fontSize: "13px",
 }));
 
-const gradientArray = new Gradient()
+export const gradientArray = new Gradient()
   .setColorGradient("#FF0000", "#4CBB17")
   .setMidpoint(101)
   .getColors();
