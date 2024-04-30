@@ -19,6 +19,7 @@ runtime = 18
 provider = 19
 budget = 20
 tmdbid = 21
+recos = 22
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
@@ -129,6 +130,9 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][provider].value = str(providers['results']['CA'])
         else:
             ws[index + 1][provider].value = "{" + "}"
+
+        recommendations = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}').json()
+        ws[index + 1][recos].value = ",".join([str(item['id']) for item in recommendations['results']])
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
         headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
