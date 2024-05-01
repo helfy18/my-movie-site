@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import { Link } from "gatsby";
 import Gradient from "javascript-color-gradient";
 
-const Item = styled(Paper)(({ theme }) => ({
+export const PosterItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   padding: theme.spacing(1),
   textAlign: "center",
@@ -16,7 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
   fontSize: "13px",
 }));
 
-const gradientArray = new Gradient()
+export const gradientArray = new Gradient()
   .setColorGradient("#FF0000", "#4CBB17")
   .setMidpoint(101)
   .getColors();
@@ -32,7 +32,7 @@ export default function MovieGrid({ nodes }) {
               state={{ from: data }}
               style={{ textDecoration: "none" }}
             >
-              <Item>
+              <PosterItem>
                 <img
                   src={data.Poster}
                   height={163}
@@ -48,7 +48,7 @@ export default function MovieGrid({ nodes }) {
                   {data.Score}/100
                 </div>
                 <div>{data.Movie}</div>
-              </Item>
+              </PosterItem>
             </Link>
           </Grid>
         );

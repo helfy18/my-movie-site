@@ -1,12 +1,13 @@
 import * as React from "react";
-import { graphql, useStaticQuery } from "gatsby";
+import { graphql, useStaticQuery, Link } from "gatsby";
 import Layout from "../components/layout";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import Gradient from "javascript-color-gradient";
 import { StaticImage } from "gatsby-plugin-image";
 import { getProviderLink } from "../utils";
+import { gradientArray } from "../components/movieGrid";
+import { PosterItem } from "../components/movieGrid";
 
 function getGenres(data) {
   let genreString = data.Genre;
@@ -90,11 +91,6 @@ const Item = styled(Paper)(({ theme }) => ({
   fontSize: "16px",
 }));
 
-const gradientArray = new Gradient()
-  .setColorGradient("#FF0000", "#4CBB17")
-  .setMidpoint(101)
-  .getColors();
-
 const MoviePage = ({ location }) => {
   const data = useStaticQuery(graphql`
     query {
@@ -123,6 +119,7 @@ const MoviePage = ({ location }) => {
           TMDBId
           id
           Provider
+          Recommendations
         }
       }
     }
@@ -137,6 +134,15 @@ const MoviePage = ({ location }) => {
   var providers;
   try {
     providers = JSON.parse(currMovie.Provider.replaceAll("'", '"'));
+  } catch (err) {
+    providers = [];
+  }
+
+  var recommendations;
+  try {
+    recommendations = JSON.parse(
+      currMovie.Recommendations.replaceAll("'", '"')
+    );
   } catch (err) {
     providers = [];
   }
@@ -331,6 +337,57 @@ const MoviePage = ({ location }) => {
               </tbody>
             </table>
           </Grid>
+        </Grid>
+        <header
+          style={{
+            textAlign: "center",
+            width: "100%",
+            fontWeight: "bold",
+            fontSize: "x-large",
+          }}
+        >
+          More Like This
+        </header>
+        <Grid
+          container
+          spacing={2}
+          wrap="nowrap"
+          style={{ overflowX: "scroll" }}
+        >
+          {recommendations?.map((id) => {
+            const movie = data.movies.nodes.filter(
+              (movie) => movie.TMDBId === id
+            )[0];
+            return (
+              movie && (
+                <Grid item xs={"auto"} key={movie.id}>
+                  <Link
+                    to={`/movie-page?id=${movie.TMDBId}`}
+                    state={{ from: data }}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <PosterItem>
+                      <img
+                        src={movie.Poster}
+                        height={163}
+                        width={110}
+                        alt="Not Found"
+                      />
+                      <div
+                        style={{
+                          color: gradientArray[movie.Score],
+                          fontWeight: "bolder",
+                        }}
+                      >
+                        {movie.Score}/100
+                      </div>
+                      <div>{movie.Movie}</div>
+                    </PosterItem>
+                  </Link>
+                </Grid>
+              )
+            );
+          })}
         </Grid>
       </Layout>
     </div>
