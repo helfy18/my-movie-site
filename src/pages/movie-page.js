@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { StaticImage } from "gatsby-plugin-image";
 import { getProviderLink } from "../utils";
 import { gradientArray } from "../components/movieGrid";
+import { PosterItem } from "../components/movieGrid";
 
 function getGenres(data) {
   let genreString = data.Genre;
@@ -137,6 +138,15 @@ const MoviePage = ({ location }) => {
     providers = [];
   }
 
+  var recommendations;
+  try {
+    recommendations = JSON.parse(
+      currMovie.Recommendations.replaceAll("'", '"')
+    );
+  } catch (err) {
+    providers = [];
+  }
+
   return currMovie ? (
     <div>
       <Layout pageTitle="Movies :)">
@@ -185,7 +195,6 @@ const MoviePage = ({ location }) => {
                 </tr>
                 <tr>
                   <td>Box Office</td>
-                  <td>{JSON.stringify(currMovie)}</td>
                   <td>${currMovie.BoxOffice}</td>
                 </tr>
                 <tr>
@@ -273,39 +282,6 @@ const MoviePage = ({ location }) => {
             <br />
             {getReview(currMovie.Review)}
             <br />
-            {/* {currMovie.Recommendations.map((id) => {
-              const movie = data.movies.nodes.filter(
-                (movie) => movie.TMDBId === id
-              )[0];
-              return (
-                <Grid item xs={"auto"} key={movie.id}>
-                  <Link
-                    to={`/movie-page?id=${movie.TMDBId}`}
-                    state={{ from: data }}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Item>
-                      <img
-                        src={movie.Poster}
-                        height={163}
-                        width={110}
-                        alt="Not Found"
-                      />
-                      <div
-                        style={{
-                          color: gradientArray[movie.Score],
-                          fontWeight: "bolder",
-                        }}
-                      >
-                        {movie.Score}/100
-                      </div>
-                      <div>{movie.Movie}</div>
-                    </Item>
-                  </Link>
-                </Grid>
-              );
-            })} */}
-            <br />
             <table>
               <tbody>
                 {JSON.parse(currMovie.Ratings.replaceAll("'", '"')).map(
@@ -361,6 +337,57 @@ const MoviePage = ({ location }) => {
               </tbody>
             </table>
           </Grid>
+        </Grid>
+        <header
+          style={{
+            textAlign: "center",
+            width: "100%",
+            fontWeight: "bold",
+            fontSize: "x-large",
+          }}
+        >
+          More Like This
+        </header>
+        <Grid
+          container
+          spacing={2}
+          wrap="nowrap"
+          style={{ overflowX: "scroll" }}
+        >
+          {recommendations?.map((id) => {
+            const movie = data.movies.nodes.filter(
+              (movie) => movie.TMDBId === id
+            )[0];
+            return (
+              movie && (
+                <Grid item xs={"auto"} key={movie.id}>
+                  <Link
+                    to={`/movie-page?id=${movie.TMDBId}`}
+                    state={{ from: data }}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <PosterItem>
+                      <img
+                        src={movie.Poster}
+                        height={163}
+                        width={110}
+                        alt="Not Found"
+                      />
+                      <div
+                        style={{
+                          color: gradientArray[movie.Score],
+                          fontWeight: "bolder",
+                        }}
+                      >
+                        {movie.Score}/100
+                      </div>
+                      <div>{movie.Movie}</div>
+                    </PosterItem>
+                  </Link>
+                </Grid>
+              )
+            );
+          })}
         </Grid>
       </Layout>
     </div>
