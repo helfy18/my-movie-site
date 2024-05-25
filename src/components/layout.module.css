@@ -77,10 +77,6 @@ button:hover {
   padding-bottom: 2rem;
 }
 
-.search-bar {
-  width: 99%;
-}
-
 @media (max-width: 480px) {
   .container {
     margin-left: 0.2rem;

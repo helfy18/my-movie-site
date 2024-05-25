@@ -54,15 +54,6 @@ const Layout = ({ pageTitle, children }) => {
           </li>
           <li className={navLinkItem}>
             <Link
-              to="/blog"
-              className={navLinkText}
-              style={{ textDecoration: "none", color: "#008080" }}
-            >
-              Blog
-            </Link>
-          </li>
-          <li className={navLinkItem}>
-            <Link
               to="/movie-grid"
               className={navLinkText}
               style={{ textDecoration: "none", color: "#008080" }}

@@ -9,27 +9,21 @@ import dataQuery from "../components/dataQuery";
 import {
   reactGrid,
   reactSelectContainer,
-  searchBar,
 } from "../components/layout.module.css";
 import { Row, Col } from "react-grid-system";
-import SearchField from "react-search-field";
+import ReactSearchBox from "react-search-box";
 import { Slider, Grid } from "@mui/material";
 
 function searchFilter(text, data) {
-  var newData = [];
-  for (let index of data) {
-    if (
-      index.Movie.toLowerCase().includes(text.toLowerCase()) ||
-      index.Actors.toLowerCase().includes(text.toLowerCase()) ||
-      index.Director.toLowerCase().includes(text.toLowerCase()) ||
-      index.Universe.toLowerCase().includes(text.toLowerCase()) ||
-      index.Sub_Universe.toLowerCase().includes(text.toLowerCase()) ||
-      index.Studio.toLowerCase().includes(text.toLowerCase())
-    ) {
-      newData.push(index);
-    }
-  }
-  return newData;
+  return data.filter(
+    (movie) =>
+      movie.Movie.toLowerCase().includes(text.toLowerCase()) ||
+      movie.Actors.toLowerCase().includes(text.toLowerCase()) ||
+      movie.Director.toLowerCase().includes(text.toLowerCase()) ||
+      movie.Universe.toLowerCase().includes(text.toLowerCase()) ||
+      movie.Sub_Universe.toLowerCase().includes(text.toLowerCase()) ||
+      movie.Studio.toLowerCase().includes(text.toLowerCase())
+  );
 }
 
 function selectedOptions(data, toAdd, label) {
@@ -76,8 +70,7 @@ const GridPage = ({ data }) => {
         <Row className={reactGrid}>
           <Col md={2}></Col>
           <Col md={4} style={{ textAlign: "center" }}>
-            <SearchField
-              classNames={searchBar}
+            <ReactSearchBox
               placeholder="Search for Title, Actor, Director..."
               onChange={(value) =>
                 searchFilter(value, dataQuery(selected, { data }, sliderValue))
