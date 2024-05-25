@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    siteUrl: `https://jdmovies.gtsb.io/`,
+    siteUrl: `https://jd-movies.netlify.app/`,
     title: "JD Movies",
   },
   plugins: [
