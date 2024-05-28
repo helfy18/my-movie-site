@@ -97,7 +97,7 @@ const MoviePage = ({ location }) => {
       movies: allMovieMovieMoviesXlsxMasterlist {
         nodes {
           Movie
-          Score
+          JH_Score
           Universe
           Sub_Universe
           Genre
@@ -138,14 +138,8 @@ const MoviePage = ({ location }) => {
     providers = [];
   }
 
-  var recommendations;
-  try {
-    recommendations = JSON.parse(
-      currMovie.Recommendations.replaceAll("'", '"')
-    );
-  } catch (err) {
-    providers = [];
-  }
+  var recommendations = currMovie.Recommendations.split(",");
+  console.log(recommendations);
 
   return currMovie ? (
     <div>
@@ -165,11 +159,11 @@ const MoviePage = ({ location }) => {
                   <td>Score</td>
                   <td
                     style={{
-                      color: gradientArray[currMovie.Score],
+                      color: gradientArray[currMovie.JH_Score],
                       fontWeight: "bolder",
                     }}
                   >
-                    {currMovie.Score}/100
+                    {currMovie.JH_Score}/100
                   </td>
                 </tr>
                 {getUniverse(currMovie.Universe)}
@@ -187,7 +181,7 @@ const MoviePage = ({ location }) => {
                 </tr>
                 <tr>
                   <td>Runtime</td>
-                  <td>{currMovie.Runtime}</td>
+                  <td>{currMovie.Runtime} min</td>
                 </tr>
                 <tr>
                   <td>Budget</td>
@@ -375,11 +369,11 @@ const MoviePage = ({ location }) => {
                       />
                       <div
                         style={{
-                          color: gradientArray[movie.Score],
+                          color: gradientArray[movie.JH_Score],
                           fontWeight: "bolder",
                         }}
                       >
-                        {movie.Score}/100
+                        {movie.JH_Score}/100
                       </div>
                       <div>{movie.Movie}</div>
                     </PosterItem>

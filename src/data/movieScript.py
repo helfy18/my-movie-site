@@ -7,19 +7,19 @@ ws = wb.active
 
 # indexes for columns of excel sheet
 titleIndex = 0
-yearIndex = 9
-plot = 11
-poster = 12
-actors = 13
-director = 14
-ratings = 15
-boxoffice = 16
-rated = 17
-runtime = 18
-provider = 19
-budget = 20
-tmdbid = 21
-recos = 22
+yearIndex = 10
+plot = 12
+poster = 13
+actors = 14
+director = 15
+ratings = 16
+boxoffice = 17
+rated = 18
+runtime = 19
+provider = 20
+budget = 21
+tmdbid = 22
+recos = 23
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
@@ -64,6 +64,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             year = '2022'
         if title == 'Heathers':
             year = '1988'
+        if "Mad Max 2" in title:
+            title = "The Road Warrior"
         # submit api request
 
         if not ws[index + 1][ratings].value:
@@ -82,12 +84,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
             path = search['results'][0]['poster_path']
             tmdbcode = search["results"][0]["id"]
-            if search["results"][0]["original_title"] == 'X-Men: First Class 35mm Special':
-                tmdbcode = search['results'][1]['id']
-                path = search['results'][1]['poster_path']
-            if search['results'][0]['original_title'] == "What's Your Name?":
-                tmdbcode = search['results'][1]['id']
-                path = search['results'][1]['poster_path']
             
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             ws[index + 1][tmdbid].value = tmdbcode
@@ -123,7 +119,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         ws[index + 1][plot].value = movieInfo["overview"]
         ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
         ws[index + 1][budget].value = f"{movieInfo['budget']:,}"
-        ws[index + 1][runtime].value = f"{movieInfo['runtime']:,} min"
+        ws[index + 1][runtime].value = f"{movieInfo['runtime']:,}"
         
         providers = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
         if providers['results'] and 'CA' in providers['results']:
@@ -132,7 +128,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][provider].value = "{" + "}"
 
         recommendations = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}').json()
-        ws[index + 1][recos].value = str(recommendations['results'])
+        ws[index + 1][recos].value = ",".join([str(item['id']) for item in recommendations['results']])
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
         headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}

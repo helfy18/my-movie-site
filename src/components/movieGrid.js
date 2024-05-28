@@ -14,6 +14,7 @@ export const PosterItem = styled(Paper)(({ theme }) => ({
   height: "250px",
   width: "110px",
   fontSize: "13px",
+  boxSizing: "content-box",
 }));
 
 export const gradientArray = new Gradient()
@@ -22,6 +23,7 @@ export const gradientArray = new Gradient()
   .getColors();
 
 export default function MovieGrid({ nodes }) {
+  nodes = nodes.sort((a, b) => b.JH_Score - a.JH_Score);
   return (
     <Grid container spacing={2.5}>
       {nodes.map((data) => {
@@ -41,11 +43,11 @@ export default function MovieGrid({ nodes }) {
                 />
                 <div
                   style={{
-                    color: gradientArray[data.Score],
+                    color: gradientArray[data.JH_Score],
                     fontWeight: "bolder",
                   }}
                 >
-                  {data.Score}/100
+                  {data.JH_Score}/100
                 </div>
                 <div>{data.Movie}</div>
               </PosterItem>

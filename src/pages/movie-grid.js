@@ -272,7 +272,7 @@ export const query = graphql`
     movies: allMovieMovieMoviesXlsxMasterlist {
       nodes {
         Movie
-        Score
+        JH_Score
         Universe
         Sub_Universe
         Genre
