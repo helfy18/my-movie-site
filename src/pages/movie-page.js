@@ -133,16 +133,14 @@ const MoviePage = ({ location }) => {
 
   var providers;
   try {
-    providers = JSON.parse(currMovie.Provider.replaceAll("'", '"'));
+    providers = JSON.parse(currMovie.Provider);
   } catch (err) {
     providers = [];
   }
 
   var recommendations;
   try {
-    recommendations = JSON.parse(
-      currMovie.Recommendations.replaceAll("'", '"')
-    );
+    recommendations = JSON.parse(currMovie.Recommendations);
   } catch (err) {
     recommendations = [];
   }
@@ -356,7 +354,7 @@ const MoviePage = ({ location }) => {
         >
           {recommendations?.map((id) => {
             const movie = data.movies.nodes.filter(
-              (movie) => movie.TMDBId === id
+              (movie) => movie.TMDBId === id.toString()
             )[0];
             return (
               movie && (

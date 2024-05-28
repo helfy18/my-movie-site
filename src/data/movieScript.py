@@ -1,5 +1,5 @@
 from openpyxl import *
-import requests, config
+import requests, config, json
 
 # ws contains the main sheet (MasterList)
 wb = load_workbook('MovieMovieMovies.xlsx')
@@ -70,7 +70,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
         if not ws[index + 1][ratings].value:
             omdb = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={title}&y={year}&type=movie').json()
-            ws[index + 1][ratings].value = str(omdb["Ratings"])
+            ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
             ws[index + 1][rated].value = omdb["Rated"]
 
         if title == 'Blades of Glory':
@@ -123,12 +123,12 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         
         providers = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
         if providers['results'] and 'CA' in providers['results']:
-            ws[index + 1][provider].value = str(providers['results']['CA'])
+            ws[index + 1][provider].value = json.dumps(providers['results']['CA'])
         else:
             ws[index + 1][provider].value = "{" + "}"
 
         recommendations = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}').json()
-        ws[index + 1][recos].value = str([str(item['id']) for item in recommendations['results']])
+        ws[index + 1][recos].value = str([item['id'] for item in recommendations['results']])
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
         headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
@@ -138,6 +138,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         data = {"value": value}
         response = requests.post(url, headers=headers, json=data).json()
 
-        print(title, year)
+        # print(title, year)
         
 wb.save('MovieMovieMovies.xlsx')
