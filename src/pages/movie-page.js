@@ -138,8 +138,14 @@ const MoviePage = ({ location }) => {
     providers = [];
   }
 
-  var recommendations = currMovie.Recommendations.split(",");
-  console.log(recommendations);
+  var recommendations;
+  try {
+    recommendations = JSON.parse(
+      currMovie.Recommendations.replaceAll("'", '"')
+    );
+  } catch (err) {
+    recommendations = [];
+  }
 
   return currMovie ? (
     <div>
