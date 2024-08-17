@@ -76,7 +76,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
             ws[index + 1][rated].value = omdb["Rated"]
         
-        if 'Naruto Shippuden the Movie' in title:
+        if 'Naruto Shippuden' in title:
             title = ws[index + 1][titleIndex].value
         if title == 'Blades of Glory':
             year = '2007'
