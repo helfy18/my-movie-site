@@ -24,8 +24,8 @@ recos = 23
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     if index >= 1:
         # skip entries already filled, comment out if full update required
-        # if ws[index + 1][plot].value:
-        #     continue
+        if ws[index + 1][plot].value:
+            continue
 
         # title and year for search
         title = ws[index + 1][titleIndex].value
@@ -136,7 +136,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         ws[index + 1][recos].value = str([item['id'] for item in recommendations['results']])
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
-        headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
+        headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'Bearer {config.tmdbtoken}'}
         if ws[index + 1][1].value:
             value = round((ws[index + 1][1].value)/5)/2
             if value == 0.0:
