@@ -7,7 +7,7 @@ ws = wb.active
 
 # indexes for columns of excel sheet
 titleIndex = 0
-yearIndex = 10
+yearIndex = 9
 plot = 12
 poster = 13
 actors = 14
@@ -66,13 +66,18 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             year = '1988'
         if "Mad Max 2" in title:
             title = "The Road Warrior"
+        if 'Naruto Shippuden the Movie' in title:
+            title = 'Naruto Shippuden'
+
         # submit api request
 
         if not ws[index + 1][ratings].value:
             omdb = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={title}&y={year}&type=movie').json()
             ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
             ws[index + 1][rated].value = omdb["Rated"]
-
+        
+        if 'Naruto Shippuden the Movie' in title:
+            title = ws[index + 1][titleIndex].value
         if title == 'Blades of Glory':
             year = '2007'
         if title == "Tiptoes":
@@ -132,12 +137,13 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
         headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'{config.tmdbtoken}'}
-        value = round((ws[index + 1][1].value)/5)/2
-        if value == 0.0:
-            value = 0.5
-        data = {"value": value}
-        response = requests.post(url, headers=headers, json=data).json()
+        if ws[index + 1][1].value:
+            value = round((ws[index + 1][1].value)/5)/2
+            if value == 0.0:
+                value = 0.5
+            data = {"value": value}
+            response = requests.post(url, headers=headers, json=data).json()
 
-        # print(title, year)
+        print(title, year)
         
 wb.save('MovieMovieMovies.xlsx')
