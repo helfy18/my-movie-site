@@ -21,7 +21,11 @@ budget = 21
 tmdbid = 22
 recos = 23
 
+apikey = config.apikey
+
 for index, row in enumerate(ws.iter_rows(values_only=True)):
+    if index == 950:
+        apikey = config.apikey2
     if index >= 1:
         # skip entries already filled, comment out if full update required
         # if ws[index + 1][plot].value:
@@ -46,12 +50,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             title = "The Return of Jafar"
         if title == "Fant4stic":
             title = "Fantastic Four"
-        if "Kangaroo Jack:" in title and year == 2004:
-            title = "Kangaroo Jack 2"
         if title == "Cyrano":
             year = '2021'
-        if title == 'Blades of Glory':
-            year = '2006'
         if "&" in title:
             title = title.replace("&", "%26")
         if title == "Tiptoes":
@@ -68,13 +68,17 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             title = "The Road Warrior"
         if 'Naruto Shippuden the Movie' in title:
             title = 'Naruto Shippuden'
+        if title == 'Expend4bles':
+            title = 'The Expendables 4'
+        if title == 'Friday the 13th Part III':
+            title = 'Friday the 13th: Part 3'
 
         # submit api request
 
-        if not ws[index + 1][ratings].value:
-            omdb = requests.get(f'http://www.omdbapi.com/?apikey={config.apikey}&t={title}&y={year}&type=movie').json()
-            ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
-            ws[index + 1][rated].value = omdb["Rated"]
+        # if not ws[index + 1][ratings].value:
+        omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&t={title}&y={year}&type=movie').json()
+        ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
+        ws[index + 1][rated].value = omdb["Rated"]
         
         if 'Naruto Shippuden' in title:
             title = ws[index + 1][titleIndex].value
