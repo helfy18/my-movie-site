@@ -107,7 +107,7 @@ const providerLinks = {
   2049: "https://www.shudder.com/apple-tv",
   2044: "https://www.outtv.com/apple-tv",
   2052: "https://www.lovenature.com/apple-tv",
-  2056: "https://www.ifcfilms.com/  apple-tv",
+  2056: "https://www.ifcfilms.com/apple-tv",
 };
 
 export const getProviderLink = (providerId) => {

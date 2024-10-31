@@ -28,12 +28,12 @@ trailer = metacritic + 1
 apikey = config.apikey
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
-    if index == 950:
-        apikey = config.apikey2
+    #if index == 950:
+    #    apikey = config.apikey2
     if index >= 1:
         # skip entries already filled, comment out if full update required
-        # if ws[index + 1][plot].value:
-        #     continue
+        if ws[index + 1][plot].value:
+            continue
 
         # title and year for search
         title = ws[index + 1][titleIndex].value
@@ -159,7 +159,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
            selected_trailer = videos['results'][0]
         else:
            selected_trailer = ''
-        ws[index + 1][trailer].value = f'https://www.youtube.com/watch?v={selected_trailer["key"]}' if selected_trailer != '' else ''
+        ws[index + 1][trailer].value = f'https://www.youtube.com/embed/{selected_trailer["key"]}' if selected_trailer != '' else ''
 
 
         url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
