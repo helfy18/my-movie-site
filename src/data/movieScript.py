@@ -1,5 +1,5 @@
 from openpyxl import *
-import requests, config, json
+import requests, config, json, time
 
 # ws contains the main sheet (MasterList)
 wb = load_workbook('MovieMovieMovies.xlsx')
@@ -24,6 +24,7 @@ rt = recos + 1
 imdb = rt + 1
 metacritic = imdb + 1
 trailer = metacritic + 1
+millis = trailer + 1
 
 apikey = config.apikey
 
@@ -79,17 +80,17 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
         # submit api request
 
-        # if not ws[index + 1][ratings].value:
-        omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&t={title}&y={year}&type=movie').json()
-        rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
-        ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
-        internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
-        ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
-        mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
-        ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
+        if not ws[index + 1][ratings].value:
+            omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&t={title}&y={year}&type=movie').json()
+            rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
+            ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
+            internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
+            ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
+            mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
+            ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
 
-        ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
-        ws[index + 1][rated].value = omdb["Rated"]
+            ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
+            ws[index + 1][rated].value = omdb["Rated"]
         
         if 'Naruto Shippuden' in title:
             title = ws[index + 1][titleIndex].value
@@ -99,6 +100,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             year = '2003'
         if title == 'Heathers':
             year = '1989'
+        if title == 'Spiral':
+            title = 'Spiral: From the Book of Saw'
         
         if not ws[index + 1][tmdbid].value:
             search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
@@ -107,6 +110,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             ws[index + 1][tmdbid].value = tmdbcode
+
+            ws[index + 1][millis].value = round(time.time() * 1000)
         else:
             tmdbcode = ws[index + 1][tmdbid].value
 
