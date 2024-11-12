@@ -28,6 +28,8 @@ millis = trailer + 1
 
 apikey = config.apikey
 
+currentTime = round(time.time() * 1000)
+
 for index, row in enumerate(ws.iter_rows(values_only=True)):
     #if index == 950:
     #    apikey = config.apikey2
@@ -111,7 +113,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             ws[index + 1][tmdbid].value = tmdbcode
 
-            ws[index + 1][millis].value = round(time.time() * 1000)
+            ws[index + 1][millis].value = currentTime
         else:
             tmdbcode = ws[index + 1][tmdbid].value
 
