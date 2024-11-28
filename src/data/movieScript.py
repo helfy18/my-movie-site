@@ -35,8 +35,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
        apikey = config.apikey2
     if index >= 1:
         # skip entries already filled, comment out if full update required
-        # if ws[index + 1][plot].value:
-        #     continue
+        if ws[index + 1][plot].value:
+            continue
 
         # title and year for search
         title = ws[index + 1][titleIndex].value
@@ -46,7 +46,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
             path = search['results'][0]['poster_path']
             tmdbcode = search["results"][0]["id"]
-            
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             ws[index + 1][tmdbid].value = tmdbcode
 
