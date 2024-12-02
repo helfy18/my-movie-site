@@ -35,8 +35,8 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
        apikey = config.apikey2
     if index >= 1:
         # skip entries already filled, comment out if full update required
-        if ws[index + 1][plot].value:
-            continue
+        # if ws[index + 1][plot].value:
+        #     continue
 
         # title and year for search
         title = ws[index + 1][titleIndex].value
