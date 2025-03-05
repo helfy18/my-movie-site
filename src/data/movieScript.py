@@ -43,7 +43,9 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         year = ws[index + 1][yearIndex].value
         
         if not ws[index + 1][tmdbid].value:
-            search = requests.get(f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}').json()
+            url = f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}'
+            search = requests.get(url).json()
+            print(url)
             path = search['results'][0]['poster_path']
             tmdbcode = search["results"][0]["id"]
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
