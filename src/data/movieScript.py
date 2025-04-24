@@ -8,7 +8,7 @@ ws = wb.active
 # indexes for columns of excel sheet
 titleIndex = 0
 yearIndex = 9
-plot = 12
+plot = 13
 poster = plot + 1
 actors = poster + 1
 director = actors + 1
@@ -24,7 +24,8 @@ rt = recos + 1
 imdb = rt + 1
 metacritic = imdb + 1
 trailer = metacritic + 1
-millis = trailer + 1
+origin_country = trailer + 1
+millis = origin_country + 1
 
 apikey = config.apikey
 
@@ -81,11 +82,18 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             boxofficeTotal = movieInfo['revenue']
         except KeyError:
             boxofficeTotal = 'N/A'
+        try:
+            country = movieInfo['origin_country'][0]
+        except KeyError:
+            country = 'US'
+        except IndexError:
+            country = 'US'
         imdbid = movieInfo["imdb_id"]
         ws[index + 1][plot].value = movieInfo["overview"]
         ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
         ws[index + 1][budget].value = f"{movieInfo['budget']:,}"
         ws[index + 1][runtime].value = f"{movieInfo['runtime']:,}"
+        ws[index + 1][origin_country].value = country
         
         providers = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
         if providers['results'] and 'CA' in providers['results']:
@@ -117,16 +125,16 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             response = requests.post(url, headers=headers, json=data).json()
 
         # OMDB SECTION
-        omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
-        rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
-        ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
-        internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
-        ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
-        mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
-        ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
+        # omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
+        # rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
+        # ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
+        # internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
+        # ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
+        # mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
+        # ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
 
-        ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
-        ws[index + 1][rated].value = omdb["Rated"]
+        # ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
+        # ws[index + 1][rated].value = omdb["Rated"]
 
         print(title, year, index)
         
