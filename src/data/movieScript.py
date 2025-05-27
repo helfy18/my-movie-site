@@ -58,17 +58,7 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
         if not ws[index + 1][actors].value:
             castAndCrew = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
-            actorString = ""
-            count = 1
-            for actor in castAndCrew["cast"]:
-                if count < 8:
-                    actorString = f'{actorString}{actor["name"]}, '
-                    count = count + 1
-                else:
-                    actorString = f'{actorString}{actor["name"]}'
-                    break
-            if actorString and actorString[-2] == ",":
-                actorString = actorString[:-2]
+            actorString = ', '.join(actor["name"] for actor in castAndCrew["cast"])
             print(title, actorString)
             if actorString:
                 ws[index + 1][actors].value = actorString
@@ -125,16 +115,16 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
             response = requests.post(url, headers=headers, json=data).json()
 
         # OMDB SECTION
-        # omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
-        # rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
-        # ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
-        # internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
-        # ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
-        # mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
-        # ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
+        omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
+        rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
+        ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
+        internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
+        ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
+        mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
+        ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
 
-        # ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
-        # ws[index + 1][rated].value = omdb["Rated"]
+        ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
+        ws[index + 1][rated].value = omdb["Rated"]
 
         print(title, year, index)
         
