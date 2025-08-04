@@ -29,6 +29,9 @@ millis = origin_country + 1
 
 apikey = config.apikey
 
+MAX_RETRIES = 5
+WAIT_TIME = 2
+
 currentTime = round(time.time() * 1000)
 
 for index, row in enumerate(ws.iter_rows(values_only=True)):
@@ -41,20 +44,20 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
 
         # title and year for search
         title = ws[index + 1][titleIndex].value
-        year = ws[index + 1][yearIndex].value
+        year = int(ws[index + 1][yearIndex].value)
         
         if not ws[index + 1][tmdbid].value:
             url = f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}'
             search = requests.get(url).json()
             print(url)
             path = search['results'][0]['poster_path']
-            tmdbcode = search["results"][0]["id"]
+            tmdbcode = int(search["results"][0]["id"])
             ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
             ws[index + 1][tmdbid].value = tmdbcode
 
             ws[index + 1][millis].value = str(currentTime)
         else:
-            tmdbcode = ws[index + 1][tmdbid].value
+            tmdbcode = int(ws[index + 1][tmdbid].value)
 
         if not ws[index + 1][actors].value:
             castAndCrew = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
@@ -91,8 +94,17 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         else:
             ws[index + 1][provider].value = "{" + "}"
 
+        recoUrl = f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}'
         recommendations = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}').json()
-        ws[index + 1][recos].value = str([item['id'] for item in recommendations['results']])
+
+        for i in range(0, MAX_RETRIES):
+            try:
+                ws[index + 1][recos].value = str([item['id'] for item in recommendations['results']])
+                break
+            except:
+                print(f'FAILED {i}, {recoUrl}, {title}, {year}')
+                if i < MAX_RETRIES - 1:
+                    time.sleep(WAIT_TIME)
 
         videos = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/videos?api_key={config.tmdbkey}').json()
         trailers = [result for result in videos['results'] if result['type'] == 'Trailer']
@@ -126,6 +138,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
         ws[index + 1][rated].value = omdb["Rated"]
 
-        print(title, year, index)
+        # print(title, year, index)
         
 wb.save('MovieMovieMovies.xlsx')
