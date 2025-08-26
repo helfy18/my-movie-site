@@ -138,6 +138,6 @@ for index, row in enumerate(ws.iter_rows(values_only=True)):
         ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
         ws[index + 1][rated].value = omdb["Rated"]
 
-        # print(title, year, index)
+        print(title, year, index)
         
 wb.save('MovieMovieMovies.xlsx')
