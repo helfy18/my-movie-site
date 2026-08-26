@@ -1,31 +1,15 @@
-from openpyxl import *
+import csv
 import requests, config, json, time
 
-# ws contains the main sheet (MasterList)
-wb = load_workbook('MovieMovieMovies.xlsx')
-ws = wb.active
+# Read all rows from the CSV as dictionaries
+with open('MovieMovieMovies.csv', 'r', newline='', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    fieldnames = reader.fieldnames
+    rows = [row for row in reader]
 
-# indexes for columns of excel sheet
-titleIndex = 0
-yearIndex = 9
-plot = 13
-poster = plot + 1
-actors = poster + 1
-director = actors + 1
-ratings = director + 1
-boxoffice = ratings + 1
-rated = boxoffice + 1
-runtime = rated + 1
-provider = runtime + 1
-budget = provider + 1
-tmdbid = budget + 1
-recos = tmdbid + 1
-rt = recos + 1
-imdb = rt + 1
-metacritic = imdb + 1
-trailer = metacritic + 1
-origin_country = trailer + 1
-millis = origin_country + 1
+def get_rating(ratings, source):
+    match = [r['Value'] for r in ratings if r['Source'] == source]
+    return match[0] if match else 'N/A'
 
 apikey = config.apikey
 
@@ -34,110 +18,112 @@ WAIT_TIME = 2
 
 currentTime = round(time.time() * 1000)
 
-for index, row in enumerate(ws.iter_rows(values_only=True)):
-    if index == 950:
+for index, row in enumerate(rows):
+    if index == 949:
        apikey = config.apikey2
-    if index >= 1:
-        # skip entries already filled, comment out if full update required
-        # if ws[index + 1][plot].value:
-        #     continue
 
-        # title and year for search
-        title = ws[index + 1][titleIndex].value
-        year = int(ws[index + 1][yearIndex].value)
-        
-        if not ws[index + 1][tmdbid].value:
-            url = f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}'
-            search = requests.get(url).json()
-            print(url)
-            path = search['results'][0]['poster_path']
-            tmdbcode = int(search["results"][0]["id"])
-            ws[index + 1][poster].value = f'https://image.tmdb.org/t/p/w500{path}'
-            ws[index + 1][tmdbid].value = tmdbcode
+    # skip entries already filled, comment out if full update required
+    # if row['Plot']:
+    #     continue
 
-            ws[index + 1][millis].value = str(currentTime)
+    # title and year for search
+    title = row['Movie']
+    year = int(row['Year'])
+
+    if not row['TMDBId']:
+        url = f'https://api.themoviedb.org/3/search/movie?api_key={config.tmdbkey}&query={title}&year={year}'
+        search = requests.get(url).json()
+        print(url)
+        path = search['results'][0]['poster_path']
+        tmdbcode = int(search["results"][0]["id"])
+        row['Poster'] = f'https://image.tmdb.org/t/p/w500{path}'
+        row['TMDBId'] = str(tmdbcode)
+
+        row['ms_added'] = str(currentTime)
+    else:
+        tmdbcode = int(row['TMDBId'])
+
+    tmdb_url = f'https://api.themoviedb.org/3/movie/{tmdbcode}'
+
+    if not row['Actors']:
+        castAndCrew = requests.get(f'{tmdb_url}/credits?api_key={config.tmdbkey}').json()
+        actorString = ', '.join(actor["name"] for actor in castAndCrew["cast"])
+        print(title, actorString)
+        if actorString:
+            row['Actors'] = actorString
         else:
-            tmdbcode = int(ws[index + 1][tmdbid].value)
+            row['Actors'] = "N/A"
 
-        if not ws[index + 1][actors].value:
-            castAndCrew = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/credits?api_key={config.tmdbkey}').json()
-            actorString = ', '.join(actor["name"] for actor in castAndCrew["cast"])
-            print(title, actorString)
-            if actorString:
-                ws[index + 1][actors].value = actorString
-            else:
-                ws[index + 1][actors].value = "N/A"
-            
-            ws[index + 1][director].value = ', '.join(credit["name"] for credit in castAndCrew["crew"] if credit["job"] == "Director")
-        
-        movieInfo = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}?api_key={config.tmdbkey}').json()
+        row['Director'] = ', '.join(credit["name"] for credit in castAndCrew["crew"] if credit["job"] == "Director")
+
+    movieInfo = requests.get(f'{tmdb_url}?api_key={config.tmdbkey}').json()
+    try:
+        boxofficeTotal = movieInfo['revenue']
+    except KeyError:
+        boxofficeTotal = 'N/A'
+    try:
+        country = movieInfo['origin_country'][0]
+    except KeyError:
+        country = 'US'
+    except IndexError:
+        country = 'US'
+    imdbid = movieInfo["imdb_id"]
+    row['Plot'] = movieInfo["overview"]
+    row['BoxOffice'] = f"{boxofficeTotal:,}"
+    row['Budget'] = f"{movieInfo['budget']:,}"
+    row['Runtime'] = f"{movieInfo['runtime']:,}"
+    row['origin_counry'] = country
+
+    providers = requests.get(f'{tmdb_url}/watch/providers?api_key={config.tmdbkey}').json()
+    if providers['results'] and 'CA' in providers['results']:
+        row['Provider'] = json.dumps(providers['results']['CA'])
+    else:
+        row['Provider'] = "{}"
+
+    recoUrl = f'{tmdb_url}/recommendations?api_key={config.tmdbkey}'
+    recommendations = requests.get(recoUrl).json()
+
+    for i in range(0, MAX_RETRIES):
         try:
-            boxofficeTotal = movieInfo['revenue']
-        except KeyError:
-            boxofficeTotal = 'N/A'
-        try:
-            country = movieInfo['origin_country'][0]
-        except KeyError:
-            country = 'US'
-        except IndexError:
-            country = 'US'
-        imdbid = movieInfo["imdb_id"]
-        ws[index + 1][plot].value = movieInfo["overview"]
-        ws[index + 1][boxoffice].value = f"{boxofficeTotal:,}"
-        ws[index + 1][budget].value = f"{movieInfo['budget']:,}"
-        ws[index + 1][runtime].value = f"{movieInfo['runtime']:,}"
-        ws[index + 1][origin_country].value = country
-        
-        providers = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/watch/providers?api_key={config.tmdbkey}').json()
-        if providers['results'] and 'CA' in providers['results']:
-            ws[index + 1][provider].value = json.dumps(providers['results']['CA'])
-        else:
-            ws[index + 1][provider].value = "{" + "}"
+            row['Recommendations'] = str([item['id'] for item in recommendations['results']])
+            break
+        except:
+            print(f'FAILED {i}, {recoUrl}, {title}, {year}')
+            if i < MAX_RETRIES - 1:
+                time.sleep(WAIT_TIME)
 
-        recoUrl = f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}'
-        recommendations = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/recommendations?api_key={config.tmdbkey}').json()
+    videos = requests.get(f'{tmdb_url}/videos?api_key={config.tmdbkey}').json()
+    trailerList = [result for result in videos['results'] if result['type'] == 'Trailer']
+    # If there's more than one trailer, prioritize the official one
+    if len(trailerList) > 0:
+      selected_trailer = next((t for t in trailerList if t['official']), trailerList[0])
+    elif len(videos['results']) > 0:
+       selected_trailer = videos['results'][0]
+    else:
+       selected_trailer = ''
+    row['Trailer'] = f'https://www.youtube.com/embed/{selected_trailer["key"]}' if selected_trailer != '' else ''
 
-        for i in range(0, MAX_RETRIES):
-            try:
-                ws[index + 1][recos].value = str([item['id'] for item in recommendations['results']])
-                break
-            except:
-                print(f'FAILED {i}, {recoUrl}, {title}, {year}')
-                if i < MAX_RETRIES - 1:
-                    time.sleep(WAIT_TIME)
+    url = f'{tmdb_url}/rating'
+    headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'Bearer {config.tmdbtoken}'}
+    if row['JH_Score']:
+        value = round(float(row['JH_Score'])/5)/2
+        if value == 0.0:
+            value = 0.5
+        data = {"value": value}
+        response = requests.post(url, headers=headers, json=data).json()
 
-        videos = requests.get(f'https://api.themoviedb.org/3/movie/{tmdbcode}/videos?api_key={config.tmdbkey}').json()
-        trailers = [result for result in videos['results'] if result['type'] == 'Trailer']
-        # If there's more than one trailer, prioritize the official one
-        if len(trailers) > 0:
-          selected_trailer = next((trailer for trailer in trailers if trailer['official']), trailers[0])
-        elif len(videos['results']) > 0:
-           selected_trailer = videos['results'][0]
-        else:
-           selected_trailer = ''
-        ws[index + 1][trailer].value = f'https://www.youtube.com/embed/{selected_trailer["key"]}' if selected_trailer != '' else ''
+    # OMDB SECTION
+    omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
+    row['RottenTomatoes'] = get_rating(omdb["Ratings"], 'Rotten Tomatoes')
+    row['IMDB'] = get_rating(omdb["Ratings"], 'Internet Movie Database')
+    row['Metacritic'] = get_rating(omdb["Ratings"], 'Metacritic')
 
-        url = f'https://api.themoviedb.org/3/movie/{tmdbcode}/rating'
-        headers = {'Content-Type': 'application/json;charset=utf8', 'Authorization': f'Bearer {config.tmdbtoken}'}
-        if ws[index + 1][1].value:
-            value = round((ws[index + 1][1].value)/5)/2
-            if value == 0.0:
-                value = 0.5
-            data = {"value": value}
-            response = requests.post(url, headers=headers, json=data).json()
+    row['Ratings'] = json.dumps(omdb["Ratings"])
+    row['Rated'] = omdb["Rated"]
 
-        # OMDB SECTION
-        omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
-        rotten = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Rotten Tomatoes']
-        ws[index + 1][rt].value = rotten[0] if len(rotten) > 0 else 'N/A'
-        internationalMovieDB = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Internet Movie Database']
-        ws[index + 1][imdb].value = internationalMovieDB[0] if len(internationalMovieDB) > 0 else 'N/A'
-        mc = [rating['Value'] for rating in omdb["Ratings"] if rating['Source'] == 'Metacritic']
-        ws[index + 1][metacritic].value = mc[0] if len(mc) > 0 else 'N/A'
+    print(title, year, index)
 
-        ws[index + 1][ratings].value = json.dumps(omdb["Ratings"])
-        ws[index + 1][rated].value = omdb["Rated"]
-
-        print(title, year, index)
-        
-wb.save('MovieMovieMovies.xlsx')
+with open('MovieMovieMovies.csv', 'w', newline='', encoding='utf-8') as f:
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(rows)
