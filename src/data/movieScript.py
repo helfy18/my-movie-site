@@ -18,9 +18,18 @@ WAIT_TIME = 2
 
 currentTime = round(time.time() * 1000)
 
-for index, row in enumerate(rows):
+def save():
+    with open('MovieMovieMovies.csv', 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+try:
+  for index, row in enumerate(rows):
     if index == 949:
        apikey = config.apikey2
+    if index == 1900:
+        apikey = config.apikey3
 
     # skip entries already filled, comment out if full update required
     # if row['Plot']:
@@ -114,16 +123,23 @@ for index, row in enumerate(rows):
 
     # OMDB SECTION
     omdb = requests.get(f'http://www.omdbapi.com/?apikey={apikey}&i={imdbid}&type=movie').json()
-    row['RottenTomatoes'] = get_rating(omdb["Ratings"], 'Rotten Tomatoes')
-    row['IMDB'] = get_rating(omdb["Ratings"], 'Internet Movie Database')
-    row['Metacritic'] = get_rating(omdb["Ratings"], 'Metacritic')
+    if omdb.get("Response") == "False" or "Ratings" not in omdb:
+        # Error response (e.g. "Request limit reached!" or "Invalid API key!"): keep existing values
+        error = omdb.get("Error", "unknown error")
+        print(f'OMDB FAILED: {error}, {title}, {year}, {index}')
+        if 'limit' in error.lower():
+            print('OMDB daily request limit reached, stopping so progress is saved. Re-run later to finish.')
+            break
+    else:
+        ratings = omdb["Ratings"]
+        row['RottenTomatoes'] = get_rating(ratings, 'Rotten Tomatoes')
+        row['IMDB'] = get_rating(ratings, 'Internet Movie Database')
+        row['Metacritic'] = get_rating(ratings, 'Metacritic')
 
-    row['Ratings'] = json.dumps(omdb["Ratings"])
-    row['Rated'] = omdb["Rated"]
+        row['Ratings'] = json.dumps(ratings)
+        row['Rated'] = omdb.get("Rated", "N/A")
 
     print(title, year, index)
-
-with open('MovieMovieMovies.csv', 'w', newline='', encoding='utf-8') as f:
-    writer = csv.DictWriter(f, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerows(rows)
+finally:
+    # always write out whatever progress was made, even if a row crashed
+    save()
