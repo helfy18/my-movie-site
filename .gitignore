@@ -5,3 +5,4 @@ package-lock.json
 config.py
 __pycache__
 chatGPT.py
+src/data/backups/
