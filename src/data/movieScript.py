@@ -81,7 +81,7 @@ try:
     row['BoxOffice'] = f"{boxofficeTotal:,}"
     row['Budget'] = f"{movieInfo['budget']:,}"
     row['Runtime'] = f"{movieInfo['runtime']:,}"
-    row['origin_counry'] = country
+    row['origin_country'] = country
 
     providers = requests.get(f'{tmdb_url}/watch/providers?api_key={config.tmdbkey}').json()
     if providers['results'] and 'CA' in providers['results']:
